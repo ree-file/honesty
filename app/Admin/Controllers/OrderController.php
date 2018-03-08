@@ -95,6 +95,7 @@ class OrderController extends Controller
               return join('&nbsp;', $goods);
             });
             $grid->created_at('时间');
+            $grid->order_status('支付状态');
             $grid->disableCreateButton();
         });
     }
