@@ -42,7 +42,7 @@ class SupplierController extends Controller
       $OrderGoods->order_id = $new_order->id;
       $OrderGoods->goods_content = serialize($order['goods']);
       $OrderGoods->save();
-      return $this->success($order['goods']);
+      return $this->success($order);
       // 创建支付单。
     	// $alipay = app('alipay.web');
     	// $alipay->setOutTradeNo($order['order_code']);
