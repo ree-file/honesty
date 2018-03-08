@@ -42,18 +42,8 @@ class SupplierController extends Controller
       $OrderGoods->order_id = $new_order->id;
       $OrderGoods->goods_content = serialize($order['goods']);
       $OrderGoods->save();
-      return $this->success($order);
-      // 创建支付单。
-    	// $alipay = app('alipay.web');
-    	// $alipay->setOutTradeNo($order['order_code']);
-    	// $alipay->setTotalFee($order['order_pay']);
-    	// $alipay->setSubject('宅校');
-    	// $alipay->setBody('goods_description');
-      //
-      // $alipay->setQrPayMode('4'); //该设置为可选，添加该参数设置，支持二维码支付。
-      //
-    	// // // 跳转到支付页面。
-    	// return redirect()->to($alipay->getPayLink());
+      return $this->success($new_order);
+
     }
     public function operate(Request $request)
     {
