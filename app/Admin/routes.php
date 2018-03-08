@@ -19,6 +19,7 @@ Route::group([
     $router->resource('announcement', AnnouncementController::class);
     $router->resource('notifiy', NotifyController::class);
     $router->resource('shippers', ShipperController::class);
+    $router->resource('orders', OrderController::class);
     $router->get('api/category','CategoryController@content');
     $router->get('api/supplier','SupplierController@content');
     $router->get('api/goods','GoodsController@content');

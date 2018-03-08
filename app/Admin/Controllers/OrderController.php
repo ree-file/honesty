@@ -72,11 +72,30 @@ class OrderController extends Controller
     protected function grid()
     {
         return Admin::grid(Order::class, function (Grid $grid) {
+            $grid->supplier()->supplier_name('小铺名');
+            $grid->user_id("下单用户");
+            $grid->order_payway('支付方式')->display(function($type){
+              if ($type=="alipay") {
+                return '支付宝';
+              }
+              elseif ($type=='weixinpay') {
+                return '微信';
+              }
+              else {
+                return '无';
+              }
+            });
+            $grid->order_pay('支付价格');
+            $grid->ordergoods()->goods_content("商品")->display(function($goods){
+              $goods = (array)unserialize($goods);
+              $goods = array_map(function ($goods) {
+                  return "<span class='label label-success'>{$goods['goods_name']}</span>";
+              }, $goods);
 
-            $grid->id('ID')->sortable();
-
-            $grid->created_at();
-            $grid->updated_at();
+              return join('&nbsp;', $goods);
+            });
+            $grid->created_at('时间');
+            $grid->disableCreateButton();
         });
     }
 
@@ -90,9 +109,10 @@ class OrderController extends Controller
         return Admin::form(Order::class, function (Form $form) {
 
             $form->display('id', 'ID');
-
-            $form->display('created_at', 'Created At');
-            $form->display('updated_at', 'Updated At');
+            $form->display("supplier.supplier_name","小铺名");
+            $form->display("user_id","用户");
+            $form->display("order_pay","支付金额¥");
+            $form->display('created_at', '时间');
         });
     }
 }
