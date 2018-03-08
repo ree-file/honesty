@@ -62,7 +62,6 @@ class Controller extends BaseController
         $goods[$i]['supplier_id'] = $request->supplier_id;
         $goods[$i]['goods_id'] = $goods[$i]['pivot']['goods_id'];
         unset($goods[$i]['pivot']);
-        unset($goods[$i]['goods_name']);
       }
       return $goods;
     }
