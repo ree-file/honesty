@@ -40,6 +40,7 @@ class Controller extends BaseController
           $one_goods['goods_id']=$goods[$i]['pivot']['goods_id'];
           $one_goods['price']=$goods[$i]['price'];
           $one_goods['number']=$goods[$i]['number'];
+          $one_goods['goods_name']=$goods[$i]['goods_name'];
           array_push($check_goods,$one_goods);
           $order_pay += $goods[$i]['number']*$goods[$i]['price'];
         }
@@ -62,6 +63,7 @@ class Controller extends BaseController
         $goods[$i]['supplier_id'] = $request->supplier_id;
         $goods[$i]['goods_id'] = $goods[$i]['pivot']['goods_id'];
         unset($goods[$i]['pivot']);
+        unset($goods[$i]['goods_name']);
       }
       return $goods;
     }
