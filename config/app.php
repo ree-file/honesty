@@ -161,6 +161,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Overtrue\LaravelWeChat\ServiceProvider::class,
         'Latrell\Alipay\AlipayServiceProvider'
+
     ],
 
     /*

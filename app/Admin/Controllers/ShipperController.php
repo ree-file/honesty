@@ -24,8 +24,8 @@ class ShipperController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('上货人员');
+            $content->description('人员列表');
 
             $content->body($this->grid());
         });
@@ -41,8 +41,8 @@ class ShipperController extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('修改');
+            $content->description('修改人员信息');
 
             $content->body($this->form()->edit($id));
         });
@@ -57,8 +57,8 @@ class ShipperController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('创建');
+            $content->description('创建一个新的上货人');
 
             $content->body($this->form());
         });
@@ -93,7 +93,8 @@ class ShipperController extends Controller
             $form->display('id', 'ID');
             $form->text('name','用户名');
             $form->password('password','密码');
-            $form->select('charge_supplier','管理小铺')->options('/admin/api/supplier');
+            $form->display('supplier.supplier_name',"当前管理小铺");
+            $form->select('charge_supplier','修改管理小铺')->options('/admin/api/supplier');
             $form->display('created_at', 'Created At');
             $form->display('updated_at', 'Updated At');
         });

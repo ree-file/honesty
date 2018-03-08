@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Shippers;
-
+use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     //
@@ -22,4 +22,5 @@ class LoginController extends Controller
         return $this->success('false');
       }
     }
+    
 }

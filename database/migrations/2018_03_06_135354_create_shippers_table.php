@@ -18,6 +18,7 @@ class CreateShippersTable extends Migration
             $table->string('name');
             $table->string('password');
             $table->integer('charge_supplier');
+            $table->rememberToken();
             $table->timestamps();
         });
     }

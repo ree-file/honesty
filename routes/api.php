@@ -19,9 +19,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/supplier/{supplier_id}','SupplierController@index');
 Route::get('/supplier/goods/{supplier_id}','SupplierController@goods');
 Route::post('/supplier/{supplier_id}/buy','SupplierController@buy');
-Route::post('/supplier/operate/{supplier_id}','SupplierController@operate');
-Route::post('/notify','NotifyController@store');
+//上货端
+  Route::post('/supplier/operate/{supplier_id}','SupplierController@operate');
+  Route::post('/notify','NotifyController@store');
+  Route::post('/shippers','LoginController@users')->name('login');
 Route::post('/login','LoginController@index');
+
 //支付接口
 Route::get('/alipay/notify','AlipayController@webNotify');
 Route::get('/alipay/return','AlipayController@webReturn');
