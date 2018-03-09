@@ -34,7 +34,16 @@ class SupplierController extends Controller
 
     public function buy(Request $request)
     {
-      $order = $this->createOrder($request);
+      $user = User::where("openid",$request->openid)->get();
+      if ($user->is_Empty()) {
+        $zhaiUser = DB::table("ecs_weixin_user")->where("fake_id",$request->openid)->first();
+        $user = new User;
+        $user->openid = $zhaiUser->fake_id;
+        $user->nickname = $zhaiUser->nickname;
+        $user->zhai_id = $zhaiUser->ecuid;
+        $user->save();
+      }
+      $order = $this->createOrder($request,$user);
       $new_order = new Order;
       $new_order->fill($order);
       $new_order->save();
