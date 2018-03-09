@@ -97,6 +97,10 @@ class OrderController extends Controller
             $grid->created_at('时间');
             $grid->order_status('支付状态');
             $grid->disableCreateButton();
+            $grid->actions(function ($actions) {
+            $actions->disableDelete();
+            $actions->disableEdit();
+            });
         });
     }
 
