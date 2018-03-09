@@ -28,7 +28,7 @@ class Controller extends BaseController
       }
       return $data;
     }
-    public function createOrder($request)
+    public function createOrder($request,$user)
     {
       $goods = $request->goods;
       $check_goods = [];
@@ -50,7 +50,7 @@ class Controller extends BaseController
       $order['order_pay'] = $order_pay;
       $order['goods'] = $check_goods;
       $order['supplier_id'] = $request->supplier_id;
-      $order['user_id'] = 1;
+      $order['user_id'] = $user->id;
       $order['order_code'] = $order_code;
       $order['order_payway'] = $request->payway;
       $order['order_status'] = 2;
