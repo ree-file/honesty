@@ -19,6 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/supplier/{supplier_id}','SupplierController@index');
 Route::get('/supplier/goods/{supplier_id}','SupplierController@goods');
 Route::post('/supplier/{supplier_id}/buy','SupplierController@buy');
+Route::post('/checkuser','UserController@checkuser()');
 //上货端
   Route::post('/supplier/operate/{supplier_id}','SupplierController@operate');
   Route::post('/notify','NotifyController@store');
