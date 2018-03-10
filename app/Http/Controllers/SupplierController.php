@@ -35,7 +35,8 @@ class SupplierController extends Controller
     public function buy(Request $request)
     {
 
-      $user = User::where("openid",$request->openid)->get();
+      $user = User::where("openid",$request->openid)->first();
+
       if ($user->id==null) {
 
         $zhaiUser = DB::table("ecs_weixin_user")->where("fake_id",$request->openid)->first();
