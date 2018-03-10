@@ -67,6 +67,6 @@ class SupplierController extends Controller
       $Suppliersales = DB::table('suppliersale')->insert($operate_record->goods);
       // $Suppliersales = Suppliersales::create(['supplier_id'=>1,'added'=>1,'leave'=>1,'goods_id'=>1]);
       $affact = DB::statement($operate_record->update_goods);
-      return $this->success($Suppliersales);
+      return $this->success($operate_record->update_goods);
     }
 }
