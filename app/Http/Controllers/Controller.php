@@ -74,12 +74,19 @@ class Controller extends BaseController
     public function createrecord($request)
     {
       $goods = $request->goods;
+      $update_goods = "update goods set num = num - case "
+      $ids = "(";
       for ($i=0; $i < count($goods); $i++) {
         $goods[$i]['supplier_id'] = $request->supplier_id;
         $goods[$i]['goods_id'] = $goods[$i]['pivot']['goods_id'];
         unset($goods[$i]['pivot']);
         unset($goods[$i]['goods_name']);
+        $update_goods = $update_goods." when id = ".$goods[$i]['goods_id']." then ".$goods[$i]['added'];
+        $ids = $ids.$goods[$i]['goods_id'].",";
       }
-      return $goods;
+      $update_goods = $update_goods." else 0 end where id in ".$ids."1111111111)";
+      $request->update_goods = $update_goods;
+      $request->goods = $goods;
+      return $request;
     }
 }

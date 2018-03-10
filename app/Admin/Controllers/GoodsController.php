@@ -103,8 +103,9 @@ class GoodsController extends Controller
               'required' => '不能为空',
               'regex' => '请输入正整数',
             ]);
-            $form->radio('is_active','上架')->options([0 => '否', 1=> '是'])->default(1);
-            $form->select('category_id',"商品种类")->options("/admin/api/category")->rules('required',[
+            $form->radio('is_active','上架')->options([0 => '否', 1=> '是']);
+            $form->display('goodscategory.cate_name','当前分类');
+            $form->select('category_id',"修改商品种类")->options("/admin/api/category")->rules('required',[
               'required' => '不能为空'
             ]);
             $form->image('img',"商品图片")->uniqueName()->rules('required',[
