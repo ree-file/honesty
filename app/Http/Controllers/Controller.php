@@ -49,7 +49,7 @@ class Controller extends BaseController
       $order_code = $data->getHex();
       $order['order_pay'] = $order_pay;
       $order['goods'] = $check_goods;
-      $order['supplier_id'] = $request->supplier_id;
+      $order['supplier_id'] = $request->supplier_id;	
       $order['user_id'] = $user->id;
       $order['order_code'] = $order_code;
       $order['order_payway'] = $request->payway;
