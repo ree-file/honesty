@@ -25,7 +25,7 @@ class Controller extends BaseController
             $is_live = 1;
           }
         }
-        if ($is_live==1) {
+        if ($is_live==0) {
           $remove_idex[count($remove_idex)] = $j;
         }
       }
