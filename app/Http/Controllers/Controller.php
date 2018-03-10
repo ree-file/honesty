@@ -74,7 +74,7 @@ class Controller extends BaseController
     public function createrecord($request)
     {
       $goods = $request->goods;
-      $update_goods = "update goods set num = num - case "
+      $update_goods = "update goods set num = num - case ";
       $ids = "(";
       for ($i=0; $i < count($goods); $i++) {
         $goods[$i]['supplier_id'] = $request->supplier_id;
