@@ -14,8 +14,23 @@ class Controller extends BaseController
 
     public function suppliercontent($supplier,$category)
     {
-      for ($i=0; $i < count($supplier[0]->goods); $i++) {
-        $supplier[0]->goods[$i]->number = 0;
+      $remove_idex = [];
+      for ($j=0; $j < count($category); $j++) {
+        $is_live = 0;
+        for ($i=0; $i < count($supplier[0]->goods); $i++) {
+          if (!isset($supplier[0]->goods[$i]->number)) {
+            $supplier[0]->goods[$i]->number = 0;
+          }
+          if ($supplier[0]->goods[$i]->category_id==$category[$j]->id&&$is_live==0) {
+            $is_live = 1;
+          }
+        }
+        if ($is_live==1) {
+          $remove_idex[count($remove_idex)] = $j;
+        }
+      }
+      for ($i=0; $i < count($remove_idex); $i++) {
+        unset($category[$remove_idex[$i]]);
       }
        $supplier[0]->category = $category;
        return $supplier;
@@ -49,7 +64,7 @@ class Controller extends BaseController
       $order_code = $data->getHex();
       $order['order_pay'] = $order_pay;
       $order['goods'] = $check_goods;
-      $order['supplier_id'] = $request->supplier_id;	
+      $order['supplier_id'] = $request->supplier_id;
       $order['user_id'] = $user->id;
       $order['order_code'] = $order_code;
       $order['order_payway'] = $request->payway;
