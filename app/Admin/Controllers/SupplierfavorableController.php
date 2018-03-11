@@ -74,9 +74,19 @@ class SupplierfavorableController extends Controller
         return Admin::grid(Supplierfavorable::class, function (Grid $grid) {
 
             $grid->id('ID')->sortable();
-
-            $grid->created_at();
-            $grid->updated_at();
+            $grid->supplier()->supplier_name("小铺名");
+            $grid->limit("满减限制");
+            $grid->discountmoney("满减额度");
+            $grid->is_active("激活")->display(function($data){
+              if ($data==0) {
+                return "否";
+              }
+              else{
+                return "是";
+              }
+            })
+            $grid->starttime("开始时间");
+            $grid->deadline("截止时间");
         });
     }
 
