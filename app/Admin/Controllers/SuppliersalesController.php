@@ -78,7 +78,7 @@ class SuppliersalesController extends Controller
             $grid->goods()->goods_name("商品名");
             $grid->added('今日上货');
             $grid->leave('昨日剩余');
-            $grid->created_at("上货时间");
+            $grid->created_at("上货时间")->sortable();
             $grid->disableCreateButton();
             $grid->actions(function ($actions) {
               $actions->disableDelete();
