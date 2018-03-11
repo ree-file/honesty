@@ -9,6 +9,7 @@ use App\Goodscategory;
 use App\Order;
 use App\OrderGoods;
 use App\Suppliersales;
+use App\Supplierfavorable;
 use Illuminate\Support\Facades\DB;
 class SupplierController extends Controller
 {
@@ -35,7 +36,7 @@ class SupplierController extends Controller
     public function buy(Request $request)
     {
 
-     $user = User::where("openid",$request->openid)->first();
+      $user = User::where("openid",$request->openid)->first();
       if (!$user) {
         $zhaiUser = DB::table("ecs_weixin_user")->where("fake_id",$request->openid)->first();
 
@@ -45,8 +46,8 @@ class SupplierController extends Controller
         $user->zhai_id = $zhaiUser->ecuid;
         $user->save();
       }
-
-      $order = $this->createOrder($request,$user);
+      $favorable = Supplierfavorable::where("supplier_id",$request->supplier_id)->orderBy('limit', 'desc')->get();
+      $order = $this->createOrder($request,$user,$favorable);
 
       $new_order = new Order;
       $new_order->fill($order);

@@ -44,7 +44,7 @@ class Controller extends BaseController
       }
       return $data;
     }
-    public function createOrder($request,$user)
+    public function createOrder($request,$user,$favorable)
     {
       $goods = $request->goods;
       $check_goods = [];
@@ -59,6 +59,14 @@ class Controller extends BaseController
           $one_goods['goods_name']=$goods[$i]['goods_name'];
           array_push($check_goods,$one_goods);
           $order_pay += $goods[$i]['number']*$goods[$i]['price'];
+        }
+      }
+      if (!$favorable->isEmpty()) {
+        for ($i=0; $i < count($favorable); $i++) {
+          if (floatval($favorable[$i]->limit)<=$order_pay) {
+            $order_pay -=floatval($favorable[$i]->discountmoney);
+            break;
+          }
         }
       }
       $data = Uuid::uuid1(time());
