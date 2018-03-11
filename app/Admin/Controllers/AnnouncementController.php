@@ -41,8 +41,8 @@ class AnnouncementController extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('修改');
+            $content->description('修改优惠信息');
 
             $content->body($this->editform()->edit($id));
         });
@@ -83,6 +83,11 @@ class AnnouncementController extends Controller
               else {
                 return '商品优惠';
               }
+            });
+            $grid->actions(function ($actions) {
+              ;
+              $actions->prepend('<a href="/admin/suppliergoods"><i class="fa fa-paper-plane"></i></a>');
+              $actions->prepend('<a href="/admin/supplierfavorable/create"><i class="fa fa-apple"></i></a>');
             });
             $grid->starttime('开始时间');
             $grid->deadline('结束时间');

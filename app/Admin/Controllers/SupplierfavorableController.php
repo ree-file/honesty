@@ -57,8 +57,8 @@ class SupplierfavorableController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('满减优惠');
+            $content->description('创建满减优惠');
 
             $content->body($this->form());
         });
@@ -89,10 +89,17 @@ class SupplierfavorableController extends Controller
     {
         return Admin::form(Supplierfavorable::class, function (Form $form) {
 
-            $form->display('id', 'ID');
+            $form->select('supplier_id','选择店铺')->options('/admin/api/supplier');
+            $form->text('limit',"满减限制");
+            $form->text("discountmoney","满减额度");
 
-            $form->display('created_at', 'Created At');
-            $form->display('updated_at', 'Updated At');
+            $form->dateRange('starttime', 'deadline',"优惠时间");
+            $form->radio("is_active","激活")->options([0=>'否',1=>'是'])->default(1);
+            $form->saving(function (Form $form) {
+              // 跳转页面
+              return redirect('/admin/announcement');
+            });
+
         });
     }
 }
