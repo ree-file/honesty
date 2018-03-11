@@ -2,7 +2,7 @@
 
 namespace App\Admin\Controllers;
 
-use App\Supplierfavorable;
+use App\Suppliersales;
 
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -11,7 +11,7 @@ use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 
-class SupplierfavorableController extends Controller
+class SuppliersalesController extends Controller
 {
     use ModelForm;
 
@@ -24,8 +24,8 @@ class SupplierfavorableController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('满减优惠');
-            $content->description('满减优惠列表');
+            $content->header('上货记录');
+            $content->description('上货记录列表');
 
             $content->body($this->grid());
         });
@@ -57,8 +57,8 @@ class SupplierfavorableController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('满减优惠');
-            $content->description('创建满减优惠');
+            $content->header('header');
+            $content->description('description');
 
             $content->body($this->form());
         });
@@ -71,22 +71,28 @@ class SupplierfavorableController extends Controller
      */
     protected function grid()
     {
-        return Admin::grid(Supplierfavorable::class, function (Grid $grid) {
+        return Admin::grid(Suppliersales::class, function (Grid $grid) {
 
             $grid->id('ID')->sortable();
-            $grid->supplier()->supplier_name("小铺名");
-            $grid->limit("满减限制");
-            $grid->discountmoney("满减额度");
-            $grid->is_active("激活")->display(function($data){
-              if ($data==0) {
-                return "否";
-              }
-              else{
-                return "是";
-              }
+            $grid->supplier()->supplier_name('小铺名');
+            $grid->goods()->goods_name("商品名");
+            $grid->added('今日上货');
+            $grid->leave('昨日剩余');
+            $grid->created_at("上货时间");
+            $grid->disableCreateButton();
+            $grid->actions(function ($actions) {
+              $actions->disableDelete();
+              $actions->disableEdit();
             });
-            $grid->starttime("开始时间");
-            $grid->deadline("截止时间");
+            $grid->filter(function($filter){
+
+              // 去掉默认的id过滤器
+              $filter->disableIdFilter();
+
+              // 在这里添加字段过滤器
+              $filter->like('supplier.supplier_name', '店铺名');
+              $filter->day('created_at',"日期");
+            });
         });
     }
 
@@ -97,16 +103,12 @@ class SupplierfavorableController extends Controller
      */
     protected function form()
     {
-        return Admin::form(Supplierfavorable::class, function (Form $form) {
+        return Admin::form(Suppliersales::class, function (Form $form) {
 
-            $form->select('supplier_id','选择店铺')->options('/admin/api/supplier');
-            $form->text('limit',"满减限制");
-            $form->text("discountmoney","满减额度");
+            $form->display('id', 'ID');
 
-            $form->dateRange('starttime', 'deadline',"优惠时间");
-            $form->radio("is_active","激活")->options([0=>'否',1=>'是'])->default(1);
-
-
+            $form->display('created_at', 'Created At');
+            $form->display('updated_at', 'Updated At');
         });
     }
 }
