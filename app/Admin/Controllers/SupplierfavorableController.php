@@ -84,7 +84,7 @@ class SupplierfavorableController extends Controller
               else{
                 return "是";
               }
-            })
+            });
             $grid->starttime("开始时间");
             $grid->deadline("截止时间");
         });
