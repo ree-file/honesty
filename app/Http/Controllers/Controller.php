@@ -20,6 +20,7 @@ class Controller extends BaseController
         for ($i=0; $i < count($supplier[0]->goods); $i++) {
           if (!isset($supplier[0]->goods[$i]->number)) {
             $supplier[0]->goods[$i]->number = 0;
+            $supplier[0]->goods[$i]->price = round(floatval($supplier[0]->goods[$i]->price)*floatval($supplier[0]->goods[$i]->pivot->discount),2);
           }
           if ($supplier[0]->goods[$i]->category_id==$category[$j]->id&&$is_live==0) {
             $is_live = 1;
