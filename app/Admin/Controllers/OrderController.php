@@ -73,7 +73,7 @@ class OrderController extends Controller
     {
         return Admin::grid(Order::class, function (Grid $grid) {
             $grid->supplier()->supplier_name('小铺名');
-            $grid->user_id("下单用户");
+            $grid->user()->nickname("下单用户");
             $grid->order_payway('支付方式')->display(function($type){
               if ($type=="alipay") {
                 return '支付宝';

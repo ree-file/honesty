@@ -105,10 +105,7 @@ class SupplierfavorableController extends Controller
 
             $form->dateRange('starttime', 'deadline',"优惠时间");
             $form->radio("is_active","激活")->options([0=>'否',1=>'是'])->default(1);
-            $form->saving(function (Form $form) {
-              // 跳转页面
-              return redirect('/admin/announcement');
-            });
+            
 
         });
     }
