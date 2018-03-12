@@ -41,7 +41,7 @@ class Controller extends BaseController
       for ($i=0; $i < count($data[0]->goods) ; $i++) {
         $data[0]->goods[$i]->leave = 0;
         $data[0]->goods[$i]->added = 0;
-        $data[0]->goods[$i]->number = "";
+        $data[0]->goods[$i]->number = 0;
       }
       return $data;
     }
@@ -105,8 +105,8 @@ class Controller extends BaseController
       $update_goods = "update goods set num = num - case ";
       $ids = "(";
       for ($i=0; $i < count($goods); $i++) {
-        $update_goods = $update_goods." when id = ".$goods[$i]['goods_id']." then ".$goods[$i]['added'];
-        $ids = $ids.$goods[$i]['goods_id'].",";
+        $update_goods = $update_goods." when id = ".$goods[$i]['pivot']['goods_id']." then ".$goods[$i]['number'];
+        $ids = $ids.$goods[$i]['pivot']['goods_id'].",";
       }
       $update_goods = $update_goods." else 0 end where id in ".$ids."0)";
 
