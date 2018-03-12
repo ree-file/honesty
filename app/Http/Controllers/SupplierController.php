@@ -11,6 +11,7 @@ use App\OrderGoods;
 use App\Suppliersales;
 use App\Supplierfavorable;
 use Illuminate\Support\Facades\DB;
+
 class SupplierController extends Controller
 {
     //
@@ -68,6 +69,12 @@ class SupplierController extends Controller
       $Suppliersales = DB::table('suppliersale')->insert($operate_record->goods);
       // $Suppliersales = Suppliersales::create(['supplier_id'=>1,'added'=>1,'leave'=>1,'goods_id'=>1]);
       $affact = DB::statement($operate_record->update_goods);
-      return $this->success($Suppliersales);
+      return $this->success($affact);
+    }
+    public function sale(Request $request)
+    {
+      $fixgoodsnum = $this->onsale($request);
+      $affact = DB::statement($fixgoodsnum);
+      return $this->success($affact);
     }
 }

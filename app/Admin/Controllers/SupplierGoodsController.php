@@ -99,7 +99,7 @@ class SupplierGoodsController extends Controller
             $form->select('supplier_id','选择店铺')->options('/admin/api/supplier')->load('goods_id', '/admin/api/goods');
             $form->select('goods_id','选择商品')->load('goods.price','/admin/api/goodsprice');
             $form->select('goods.price','商品价格');
-            $form->text('supplier_num',"商品数量");
+            $form->display('supplier_num',"商品数量");
             $form->text('shipments',"上货数量");
             $form->text('discount','商品折扣')->default('1');
             $form->radio('is_discount','是否打折')->options(['0'=>'不打折','1'=>'打折'])->default('0');
@@ -122,5 +122,61 @@ class SupplierGoodsController extends Controller
           $form->dateRange('starttime', 'deadline', '选择打折时间');
       });
     }
+    public function update($id)
+    {
+      $data = Input::all();
+      $isEditable = $this->isEditable($data);
 
+        $data = $this->handleEditable($data);
+
+        $data = $this->handleFileDelete($data);
+
+        if ($this->handleOrderable($id, $data)) {
+            return response([
+                'status'  => true,
+                'message' => trans('admin.update_succeeded'),
+            ]);
+        }
+
+        /* @var Model $this->model */
+        $this->model = $this->model->with($this->getRelations())->findOrFail($id);
+
+        $this->setFieldOriginalValue();
+
+        // Handle validation errors.
+        if ($validationMessages = $this->validationMessages($data)) {
+            if (!$isEditable) {
+                return back()->withInput()->withErrors($validationMessages);
+            } else {
+                return response()->json(['errors' => array_dot($validationMessages->getMessages())], 422);
+            }
+        }
+
+        if (($response = $this->prepare($data)) instanceof Response) {
+            return $response;
+        }
+
+        DB::transaction(function () {
+            $updates = $this->prepareUpdate($this->updates);
+
+            foreach ($updates as $column => $value) {
+                /* @var Model $this->model */
+                $this->model->setAttribute($column, $value);
+            }
+
+            $this->model->save();
+
+            $this->updateRelation($this->relations);
+        });
+
+        if (($result = $this->complete($this->saved)) instanceof Response) {
+            return $result;
+        }
+
+        if ($response = $this->ajaxResponse(trans('admin.update_succeeded'))) {
+            return $response;
+        }
+
+        return $this->redirectAfterUpdate();
+    }
 }

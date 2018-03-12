@@ -41,6 +41,7 @@ class Controller extends BaseController
       for ($i=0; $i < count($data[0]->goods) ; $i++) {
         $data[0]->goods[$i]->leave = 0;
         $data[0]->goods[$i]->added = 0;
+        $data[0]->goods[$i]->number = "";
       }
       return $data;
     }
@@ -83,7 +84,7 @@ class Controller extends BaseController
     public function createrecord($request)
     {
       $goods = $request->goods;
-      $update_goods = "update goods set num = num - case ";
+      $update_goods = "update supplier_goods set supplier_num = supplier_num - case ";
       $ids = "(";
       for ($i=0; $i < count($goods); $i++) {
         $goods[$i]['supplier_id'] = $request->supplier_id;
@@ -93,9 +94,22 @@ class Controller extends BaseController
         $update_goods = $update_goods." when id = ".$goods[$i]['goods_id']." then ".$goods[$i]['added'];
         $ids = $ids.$goods[$i]['goods_id'].",";
       }
-      $update_goods = $update_goods." else 0 end where id in ".$ids."1111111111)";
+      $update_goods = $update_goods." else 0 end where id in ".$ids."0) and supplier_id = ".$request->supplier_id;
       $request->update_goods = $update_goods;
       $request->goods = $goods;
       return $request;
+    }
+    public function onsale($request)
+    {
+      $goods = $request->goods;
+      $update_goods = "update goods set num = num - case ";
+      $ids = "(";
+      for ($i=0; $i < count($goods); $i++) {
+        $update_goods = $update_goods." when id = ".$goods[$i]['goods_id']." then ".$goods[$i]['added'];
+        $ids = $ids.$goods[$i]['goods_id'].",";
+      }
+      $update_goods = $update_goods." else 0 end where id in ".$ids."0)";
+
+      return $update_goods;
     }
 }
