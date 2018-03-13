@@ -23,7 +23,7 @@ class HomeController extends Controller
             $content->row(function (Row $row){
               $row->column(3,function (Column $column){
                 $today = strtotime(date("Y-m-d"),time());
-                $count = Order::where('created_at',">",$today*1000)->first();
+                $count = Order::where('created_at',">",$today*10000)->first();
                 $infoBox = new InfoBox('今日订单数', 'chrome', 'primary', '', $count);
                 $column->append($infoBox);
               });
@@ -31,7 +31,7 @@ class HomeController extends Controller
                 $lastMonday = strtotime('-2 monday', time());
                 $lastSunday = strtotime('-1 monday', time());
 
-                $count = Order::where('created_at',">",$lastMonday*1000)->where('created_at',"<",$lastSunday*1000)->count();
+                $count = Order::where('created_at',">",$lastMonday*10000)->where('created_at',"<",$lastSunday*10000)->count();
                 $infoBox = new InfoBox('上周订单数','arrows','aqua',"",$count);
                 $column->append($infoBox);
               });
