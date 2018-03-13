@@ -68,7 +68,15 @@ class HomeController extends Controller
                 $week_headers_count = collect([]);
                 $week_headers_money = collect([]);
                 for ($i=0; $i < $order->count(); $i++) {
-                  if ($week_headers_count->contains($order[$i]['supplier']['supplier_name'])) {
+                  $array1=[];
+                  $array2=[];
+                  $array1 = [$week_headers_count->count(),
+                            $order[$i]['supplier']['supplier_name'],
+                            1];
+                  $array2 = [$week_headers_count->count(),
+                          $order[$i]['supplier']['supplier_name'],
+                          $order[$i]['order_pay']];
+                  if ($week_headers_count->contains($array1)) {
                     for ($j=0; $j < $week_headers_count->count(); $j++) {
                       if ($week_headers_count[$j][1]==$order[$i]['supplier']['supplier_name']) {
                           $week_headers_count[$j][3] = intval($week_headers_count[$j][3])+1;
@@ -77,19 +85,20 @@ class HomeController extends Controller
                     }
                   }
                   else {
-                    $array1=[];
-                    $array2=[];
-                    $array1 = [$week_headers_count->count(),
-                              $order[$i]['supplier']['supplier_name'],
-                              1];
-                    $array2 = [$week_headers_count->count(),
-                            $order[$i]['supplier']['supplier_name'],
-                            $order[$i]['order_pay']];
+
                     $week_headers_count->push($array1);
                     $week_headers_money->push($array2);
                   }
                   if ($order[$i]['created_at']>$today) {
-                    if ($today_headers_count->contains($order[$i]['supplier']['supplier_name'])) {
+                    $array3=[];
+                    $array4=[];
+                    $array3 = [$today_headers_money->count(),
+                              $order[$i]['supplier']['supplier_name'],
+                              1];
+                    $array4 = [$today_headers_money->count(),
+                            $order[$i]['supplier']['supplier_name'],
+                            $order[$i]['order_pay']];
+                    if ($today_headers_count->contains($array3)) {
                       for ($j=0; $j < $today_headers_count->count(); $j++) {
                         if ($today_headers_count[$j][1]==$order[$i]['supplier']['supplier_name']) {
                             $today_headers_count[$j][3] = intval($today_headers_count[$j][3])+1;
@@ -99,14 +108,7 @@ class HomeController extends Controller
 
                     }
                     else {
-                      $array3=[];
-                      $array4=[];
-                      $array3 = [$today_headers_money->count(),
-                                $order[$i]['supplier']['supplier_name'],
-                                1];
-                      $array4 = [$today_headers_money->count(),
-                              $order[$i]['supplier']['supplier_name'],
-                              $order[$i]['order_pay']];
+
                       $today_headers_count->push($array3);
                       $today_headers_money->push($array4);
                     }
@@ -117,7 +119,7 @@ class HomeController extends Controller
                 $tab->add('本周订单排行', new Table($today_headers,$week_headers_count->toArray()));
                 $tab->add("今天收益排行", new Table($week_headers,$today_headers_money->toArray()));
                 $tab->add("本周收益排行", new Table($week_headers,$week_headers_money->toArray()));
-                $column->append($order->contains("13栋诚信小铺"));
+                $column->append($tab);
               });
             });
         });
