@@ -31,7 +31,21 @@ class HomeController extends Controller
                 $lastSunday = date('Y-m-d', strtotime('-1 monday', time()));
 
                 $count = Order::where('created_at',">",$lastSunday)->where('created_at',"<",now())->count();
-                $infoBox = new InfoBox('上周订单数','arrows','aqua',"",$count);
+                $infoBox = new InfoBox('本周订单数','arrows','aqua',"",$count);
+                $column->append($infoBox);
+              });
+              $row->column(3,function(Column $column){
+                $today = date("Y-m-d");
+
+                $count = Order::where('created_at',">",$today)->where('order_status',"2")->sum("order_pay");
+                $infoBox = new InfoBox('今日收益','chrome','primary',"",$count);
+                $column->append($infoBox);
+              });
+              $row->column(3,function(Column $column){
+                $lastSunday = date('Y-m-d', strtotime('-1 monday', time()));
+
+                $count = Order::where('created_at',">",$lastSunday)->where('created_at',"<",now())->where('order_status',"2")->sum("order_pay");
+                $infoBox = new InfoBox('本周收益','arrows','aqua',"",$count);
                 $column->append($infoBox);
               });
             });
