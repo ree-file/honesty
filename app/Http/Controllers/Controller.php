@@ -125,7 +125,7 @@ class Controller extends BaseController
         }
         $data[$i][0] = $i+1;
       }
-
+      $data[count($data)-1][0] = count($data);
       return $data;
     }
 }

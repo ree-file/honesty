@@ -26,7 +26,7 @@ class HomeController extends Controller
             $content->description('网站概要信息');
 
             $lastSunday = date('Y-m-d', strtotime('-1 monday', time()));
-            $order = Order::with(["supplier"])->where('created_at',">",$lastSunday)->where('created_at',"<",now())->get();
+            $order = Order::with(["supplier"])->where('created_at',">",$lastSunday)->where('created_at',"<",now())->where('order_status',"2")->get();
 
             $content->row(function (Row $row) use($order){
               $row->column(3,function (Column $column) use($order){
@@ -46,7 +46,7 @@ class HomeController extends Controller
               $row->column(3,function(Column $column)use ($order){
                 $today = date("Y-m-d");
 
-                $count = $order->where('created_at',">",$today)->where('order_status',"2")->sum("order_pay");
+                $count = $order->where('created_at',">",$today)->sum("order_pay");
                 $infoBox = new InfoBox('今日收益','chrome','primary',"",$count);
                 $column->append($infoBox);
               });
