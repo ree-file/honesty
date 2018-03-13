@@ -23,7 +23,7 @@ class HomeController extends Controller
             $content->row(function (Row $row){
               $row->column(3,function (Column $column){
                 $today = strtotime(date("Y-m-d"),time());
-                $count = Order::where('created_at',">",$today*10000)->first();
+                $count = Order::where('created_at',">",intval($today)*1000)->first();
                 $infoBox = new InfoBox('今日订单数', 'chrome', 'primary', '', $count);
                 $column->append($infoBox);
               });
