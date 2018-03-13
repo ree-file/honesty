@@ -27,6 +27,18 @@ class HomeController extends Controller
                 $infoBox = new InfoBox('今日订单数', 'chrome', 'primary', '', $count);
                 $column->append($infoBox);
               });
+              $row->column(3,function(Column $column){
+                $lastMonday = strtotime('-2 monday', time());
+                $lastSunday = strtotime('-1 monday', time());
+
+                $count = Order::where('created_at',">",$lastMonday)->where('created_at',"<",$lastSunday)->count();
+                $infoBox = new InfoBox('上周订单数','arrows','aqua',"",$count);
+                $column->append($infoBox);
+              });
+            });
+            $content->row(function (Row $row){
+
+
             });
         });
     }
