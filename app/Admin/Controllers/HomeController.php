@@ -8,7 +8,9 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Column;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Layout\Row;
-
+use Encore\Admin\Widgets\Box;
+use Encore\Admin\Widgets\InfoBox;
+use App\Order;
 class HomeController extends Controller
 {
     public function index()
@@ -18,7 +20,18 @@ class HomeController extends Controller
             $content->header('诚信小铺后台');
             $content->description('网站概要信息');
 
-
+            $content->row(function (Row $row){
+              $row->column(3,function (Column $column){
+                $today = strtotime(date("Y-m-d"),time());
+                $count = Order::where('created_at',">",$today)->count();
+                $infoBox = new InfoBox('今日订单数', 'chrome', 'primary', '', $count);
+                $column->append($infoBox);
+              });
+            });
         });
+    }
+    public function FunctionName($value='')
+    {
+      # code...
     }
 }
