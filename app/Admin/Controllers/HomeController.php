@@ -25,9 +25,7 @@ class HomeController extends Controller
             $content->description('网站概要信息');
 
             $lastSunday = date('Y-m-d', strtotime('-1 monday', time()));
-            $order = Order::with(["supplier"=>function($query){
-              $query->select("supplier_name");
-            }])->where('created_at',">",$lastSunday)->where('created_at',"<",now())->where('order_status',"2")->get();
+            $order = Order::with(["supplier"])->where('created_at',">",$lastSunday)->where('created_at',"<",now())->get();
 
             $content->row(function (Row $row) use($order){
               $row->column(3,function (Column $column) use($order){
@@ -87,17 +85,18 @@ class HomeController extends Controller
                     $array2 = [$week_headers_count->count(),
                             $order[$i]['supplier']['supplier_name'],
                             $order[$i]['order_pay']];
-                    $week_headers_count->concat($array1);
-                    $week_headers_money->concat($array2);
+                    $week_headers_count->push($array1);
+                    $week_headers_money->push($array2);
                   }
                   if ($order[$i]['created_at']>$today) {
                     if ($today_headers_count->contains($order[$i]['supplier']['supplier_name'])) {
                       for ($j=0; $j < $today_headers_count->count(); $j++) {
                         if ($today_headers_count[$j][1]==$order[$i]['supplier']['supplier_name']) {
-                            $today_headers_count[$j][2] = intval($week_headers_count[$j][2])+1;
-                            $today_headers_money[$j][2] = floatval($today_headers_money[$j][2])+floatval($order[$i]['order_pay']);
+                            $today_headers_count[$j][3] = intval($today_headers_count[$j][3])+1;
+                            $today_headers_money[$j][3] = floatval($today_headers_money[$j][3])+floatval($order[$i]['order_pay']);
+                          }
                         }
-                      }
+
                     }
                     else {
                       $array3=[];
@@ -108,15 +107,15 @@ class HomeController extends Controller
                       $array4 = [$today_headers_money->count(),
                               $order[$i]['supplier']['supplier_name'],
                               $order[$i]['order_pay']];
-                      $week_headers_count->concat($array3);
-                      $week_headers_money->concat($array4);
+                      $today_headers_count->push($array3);
+                      $today_headers_money->push($array4);
                     }
                   }
 
                 }
                 $tab->add("今天订单排行", new Table($today_headers,$today_headers_count->toArray()));
-                $tab->add('本周订单排行', new Table($week_headers,$week_headers_count->toArray()));
-                $tab->add("今天收益排行", new Table($today_headers,$today_headers_money->toArray()));
+                $tab->add('本周订单排行', new Table($today_headers,$week_headers_count->toArray()));
+                $tab->add("今天收益排行", new Table($week_headers,$today_headers_money->toArray()));
                 $tab->add("本周收益排行", new Table($week_headers,$week_headers_money->toArray()));
                 $column->append($tab);
               });
