@@ -117,7 +117,7 @@ class HomeController extends Controller
                 $tab->add('本周订单排行', new Table($today_headers,$week_headers_count->toArray()));
                 $tab->add("今天收益排行", new Table($week_headers,$today_headers_money->toArray()));
                 $tab->add("本周收益排行", new Table($week_headers,$week_headers_money->toArray()));
-                $column->append($tab);
+                $column->append($order->contains("13栋诚信小铺"));
               });
             });
         });
