@@ -28,10 +28,10 @@ class HomeController extends Controller
                 $column->append($infoBox);
               });
               $row->column(3,function(Column $column){
-                $lastMonday = strtotime('-2 monday', time());
-                $lastSunday = strtotime('-1 monday', time());
+                $lastMonday = date('Y-m-d', strtotime('-2 monday', time()));
+                $lastSunday = date('Y-m-d', strtotime('-1 monday', time()));
 
-                $count = Order::where('created_at',">",$lastMonday*100000)->where('created_at',"<",$lastSunday*100000)->count();
+                $count = Order::where('created_at',">",$lastMonday)->where('created_at',"<",$lastSunday)->count();
                 $infoBox = new InfoBox('上周订单数','arrows','aqua',"",$count);
                 $column->append($infoBox);
               });
