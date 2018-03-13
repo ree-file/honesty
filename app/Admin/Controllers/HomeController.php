@@ -14,6 +14,7 @@ use App\Order;
 use Encore\Admin\Widgets\Tab;
 use Encore\Admin\Widgets\Table;
 use Illuminate\Support\Collection;
+use App\Supplier;
 class HomeController extends Controller
 {
   protected $order = "";
@@ -61,64 +62,24 @@ class HomeController extends Controller
               $row->column(12,function (Column $column)use($order){
                 $tab = new Tab();
                 $today = date("Y-m-d");
-                $today_headers = ['排名','店铺名','数量'];
-                $week_headers = ['排名','店铺名','金额'];
-                $today_headers_count = collect([]);
-                $today_headers_money = collect([]);
-                $week_headers_count = collect([]);
-                $week_headers_money = collect([]);
-                for ($i=0; $i < $order->count(); $i++) {
-                  $array1=[];
-                  $array2=[];
-                  $array1 = [$week_headers_count->count(),
-                            $order[$i]['supplier']['supplier_name'],
-                            1];
-                  $array2 = [$week_headers_count->count(),
-                          $order[$i]['supplier']['supplier_name'],
-                          $order[$i]['order_pay']];
-                  if ($week_headers_count->contains($array1)) {
-                    for ($j=0; $j < $week_headers_count->count(); $j++) {
-                      if ($week_headers_count[$j][1]==$order[$i]['supplier']['supplier_name']) {
-                          $week_headers_count[$j][3] = intval($week_headers_count[$j][3])+1;
-                          $week_headers_money[$j][3] = floatval($week_headers_money[$j][3])+floatval($order[$i]['order_pay']);
-                      }
-                    }
-                  }
-                  else {
-
-                    $week_headers_count->push($array1);
-                    $week_headers_money->push($array2);
-                  }
-                  if ($order[$i]['created_at']>$today) {
-                    $array3=[];
-                    $array4=[];
-                    $array3 = [$today_headers_money->count(),
-                              $order[$i]['supplier']['supplier_name'],
-                              1];
-                    $array4 = [$today_headers_money->count(),
-                            $order[$i]['supplier']['supplier_name'],
-                            $order[$i]['order_pay']];
-                    if ($today_headers_count->contains($array3)) {
-                      for ($j=0; $j < $today_headers_count->count(); $j++) {
-                        if ($today_headers_count[$j][1]==$order[$i]['supplier']['supplier_name']) {
-                            $today_headers_count[$j][3] = intval($today_headers_count[$j][3])+1;
-                            $today_headers_money[$j][3] = floatval($today_headers_money[$j][3])+floatval($order[$i]['order_pay']);
-                          }
-                        }
-
-                    }
-                    else {
-
-                      $today_headers_count->push($array3);
-                      $today_headers_money->push($array4);
-                    }
-                  }
-
-                }
-                $tab->add("今天订单排行", new Table($today_headers,$today_headers_count->toArray()));
-                $tab->add('本周订单排行', new Table($today_headers,$week_headers_count->toArray()));
-                $tab->add("今天收益排行", new Table($week_headers,$today_headers_money->toArray()));
-                $tab->add("本周收益排行", new Table($week_headers,$week_headers_money->toArray()));
+                $headers = ['排名','店铺名','数量','金额'];
+                $data = Supplier::all();
+                $data = $data->map(function($item,$key)use($order){
+                  $supplier_order = $order->where('supplier_id',$item['id']);
+                  return [0,$item['supplier_name'],$supplier_order->count(),$supplier_order->sum("order_pay")];
+                });
+                // $data_Bycount = $data->sortByDesc(3);
+                // $data_Bycount = $data_Bycount->map(function($item,$key){
+                //   return $item[0]=$key+1;
+                // });
+                // $data_Bymoney = $data->sortByDesc(4);
+                // $data_Bymoney = $data_Bymoney->map(function($item,$key){
+                //   return $item[0]=$key+1;
+                // });
+                $tab->add("今天订单排行", new Table($headers,$data->toArray()));
+                $tab->add('本周订单排行', new Table($headers,$data->toArray()));
+                $tab->add("今天收益排行", new Table($headers,$data->toArray()));
+                $tab->add("本周收益排行", new Table($headers,$data->toArray()));
                 $column->append($tab);
               });
             });
