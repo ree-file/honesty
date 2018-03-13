@@ -112,4 +112,20 @@ class Controller extends BaseController
 
       return $update_goods;
     }
+    public function Bydesc($data,$key)
+    {
+
+      for ($i=0; $i < count($data)-1; $i++) {
+        for ($j=0; $j < count($data)-1-$i; $j++) {
+          if ($data[$j][$key]<$data[$j+1][$key]) {
+              $temp = $data[$j];
+              $data[$j] = $data[$j+1];
+              $data[$j+1] = $temp;
+          }
+        }
+        $data[$i][0] = $i+1;
+      }
+
+      return $data;
+    }
 }

@@ -64,22 +64,23 @@ class HomeController extends Controller
                 $today = date("Y-m-d");
                 $headers = ['排名','店铺名','数量','金额'];
                 $data = Supplier::all();
-                $data = $data->map(function($item,$key)use($order){
+                $week_data = $data->map(function($item,$key)use($order){
                   $supplier_order = $order->where('supplier_id',$item['id']);
                   return [0,$item['supplier_name'],$supplier_order->count(),$supplier_order->sum("order_pay")];
                 });
-                // $data_Bycount = $data->sortByDesc(3);
-                // $data_Bycount = $data_Bycount->map(function($item,$key){
-                //   return $item[0]=$key+1;
-                // });
-                // $data_Bymoney = $data->sortByDesc(4);
-                // $data_Bymoney = $data_Bymoney->map(function($item,$key){
-                //   return $item[0]=$key+1;
-                // });
-                $tab->add("今天订单排行", new Table($headers,$data->toArray()));
-                $tab->add('本周订单排行', new Table($headers,$data->toArray()));
-                $tab->add("今天收益排行", new Table($headers,$data->toArray()));
-                $tab->add("本周收益排行", new Table($headers,$data->toArray()));
+                $today_data = $data->map(function($item,$key)use($order){
+                  $today = date("Y-m-d");
+                  $supplier_order = $order->where('supplier_id',$item['id'])->where('created_at',">",$today);
+                  return [0,$item['supplier_name'],$supplier_order->count(),$supplier_order->sum("order_pay")];
+                });
+                $today_data_count = $this->Bydesc($today_data->toArray(),2);
+                $week_data_count = $this->Bydesc($week_data->toArray(),2);
+                $today_data_money = $this->Bydesc($today_data->toArray(),3);
+                $week_data_money = $this->Bydesc($week_data->toArray(),3);
+                $tab->add("今天订单排行", new Table($headers,$today_data_count));
+                $tab->add('本周订单排行', new Table($headers,$week_data_count));
+                $tab->add("今天收益排行", new Table($headers,$today_data_money));
+                $tab->add("本周收益排行", new Table($headers,$week_data_money));
                 $column->append($tab);
               });
             });
