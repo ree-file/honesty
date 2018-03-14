@@ -58,7 +58,7 @@ class Controller extends BaseController
           $one_goods['price']=$goods[$i]['price'];
           $one_goods['number']=$goods[$i]['number'];
           $one_goods['goods_name']=$goods[$i]['goods_name'];
-          $one_goods['pay']=floatval($goods[$i]['price'])*floatval($goods[$i]['number']);
+          $one_goods['pay']=round(floatval($goods[$i]['price'])*floatval($goods[$i]['number']),2);
           array_push($check_goods,$one_goods);
           $order_pay += $goods[$i]['number']*$goods[$i]['price'];
         }
@@ -73,7 +73,7 @@ class Controller extends BaseController
       }
       $data = Uuid::uuid1(time());
       $order_code = $data->getHex();
-      $order['order_pay'] = $order_pay;
+      $order['order_pay'] = round($order_pay,2);
       $order['goods'] = $check_goods;
       $order['supplier_id'] = $request->supplier_id;
       $order['user_id'] = $user->id;
