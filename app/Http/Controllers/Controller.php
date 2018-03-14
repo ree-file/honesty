@@ -117,11 +117,13 @@ class Controller extends BaseController
     {
 
       for ($i=0; $i < count($data)-1; $i++) {
-        for ($j=0; $j < count($data)-1-$i; $j++) {
-          if ($data[$j][$key]<$data[$j+1][$key]) {
+        $temp = $data[$i];
+        for ($j=$i+1; $j < count($data); $j++) {
+
+          if ($temp[$key]<$data[$j][$key]) {
               $temp = $data[$j];
-              $data[$j] = $data[$j+1];
-              $data[$j+1] = $temp;
+              $data[$j] = $data[$i];
+              $data[$i] = $temp;
           }
         }
         $data[$i][0] = $i+1;
