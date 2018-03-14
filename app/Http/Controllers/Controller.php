@@ -58,6 +58,7 @@ class Controller extends BaseController
           $one_goods['price']=$goods[$i]['price'];
           $one_goods['number']=$goods[$i]['number'];
           $one_goods['goods_name']=$goods[$i]['goods_name'];
+          $one_goods['pay']=floatval($goods[$i]['price'])*floatval($goods[$i]['number']);
           array_push($check_goods,$one_goods);
           $order_pay += $goods[$i]['number']*$goods[$i]['price'];
         }
@@ -125,6 +126,7 @@ class Controller extends BaseController
         }
         $data[$i][0] = $i+1;
       }
+      $data[0][0] = 1;
       $data[count($data)-1][0] = count($data);
       return $data;
     }
