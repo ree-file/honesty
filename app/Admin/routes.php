@@ -24,4 +24,5 @@ Route::group([
     $router->resource('supplier/goods/detail','SupplierController@goodsdetail');
     $router->resource('/goodssale',SaleInfoController::class);
     $router->get('supplier/{id}/goods','SupplierController@goodsmuster');
+    $router->get('api/category',"CategoryController@content");
 });
