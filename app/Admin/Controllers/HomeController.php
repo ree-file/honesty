@@ -65,8 +65,8 @@ class HomeController extends Controller
               $row->column(12,function (Column $column)use($order){
                 $tab = new Tab();
                 $today = date("Y-m-d");
-                $headers = ['排名','店铺名','数量','金额'];
-                $goods_header = ['排名','商品名','数量','金额'];
+                $headers = ['排名','店铺名','销量','金额'];
+                $goods_header = ['排名','商品名','销量','金额'];
                 $data = $this->orderRank($order);
                 $goods_data = $this->goodsRank($order);
                 $tab->add("今天订单排行", new Table($headers,$data['today_count']));

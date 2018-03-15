@@ -21,14 +21,7 @@ Route::group([
     $router->resource('shippers', ShipperController::class);
     $router->resource('orders', OrderController::class);
     $router->resource('users', UserController::class);
-    $router->resource('suppliersales', SuppliersalesController::class);
-    $router->get('api/category','CategoryController@content');
-    $router->get('api/supplier','SupplierController@content');
-    $router->get('api/goods','GoodsController@content');
-    $router->get('api/goodsprice','GoodsController@price');
-    $router->post('/suppliergoods/update','SupplierGoodsController@update');
-    //有待提高
-    $router->get('supplier/all/goods','SupplierController@goods');
-    $router->get('supplier/{id}/goods/detail','SupplierController@goodsdetail');
+    $router->resource('supplier/goods/detail','SupplierController@goodsdetail');
+    $router->resource('/goodssale',SaleInfoController::class);
     $router->get('supplier/{id}/goods','SupplierController@goodsmuster');
 });
