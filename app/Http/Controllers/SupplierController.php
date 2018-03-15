@@ -10,6 +10,7 @@ use App\Order;
 use App\OrderGoods;
 use App\Suppliersales;
 use App\Supplierfavorable;
+use App\Log;
 use Illuminate\Support\Facades\DB;
 
 class SupplierController extends Controller
@@ -73,8 +74,14 @@ class SupplierController extends Controller
     }
     public function sale(Request $request)
     {
-      $fixgoodsnum = $this->onsale($request);
-      $affact = DB::statement($fixgoodsnum);
-      return $this->success($affact);
+      $result = $this->onsale($request);
+      $affact = DB::statement($result['update_goods']);
+      $log = DB::table('log')->insert($result['output']);
+      if ($log&&$affact) {
+        return $this->success($affact);
+      }
+      else {
+        return $this->failed("请重新插入");
+      }
     }
 }

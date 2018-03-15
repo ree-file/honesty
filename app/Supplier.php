@@ -30,7 +30,7 @@ class Supplier extends Model
 
     public function goods()
     {
-      return $this->belongsToMany("App\Goods",'supplier_goods')->withPivot(['goods_id',"discount","is_discount","shipments"]);
+      return $this->belongsToMany("App\Goods",'supplier_goods')->withPivot(['goods_id',"discount","is_discount","shipments","output"]);
     }
-  
+
 }

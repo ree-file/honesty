@@ -105,13 +105,18 @@ class Controller extends BaseController
       $goods = $request->goods;
       $update_goods = "update goods set num = num - case ";
       $ids = "(";
+      $output = [];
       for ($i=0; $i < count($goods); $i++) {
         $update_goods = $update_goods." when id = ".$goods[$i]['pivot']['goods_id']." then ".$goods[$i]['number'];
         $ids = $ids.$goods[$i]['pivot']['goods_id'].",";
+        $output[$i]['supplier_id'] = $request->supplier_id;
+        $output[$i]['goods_id'] = $goods[$i]['pivot']['goods_id'];
+        $output[$i]['num'] = $goods[$i]['number'];
       }
       $update_goods = $update_goods." else 0 end where id in ".$ids."0)";
-
-      return $update_goods;
+      $result_goods['update_goods'] = $update_goods;
+      $result_goods['output'] = $output;
+      return $result_goods;
     }
     public function Bydesc($data,$key)
     {
