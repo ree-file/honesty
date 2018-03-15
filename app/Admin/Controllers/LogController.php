@@ -84,12 +84,10 @@ class LogController extends Controller
             $grid->disableCreateButton();
         });
         $grid->filter(function($filter){
-
             // 去掉默认的id过滤器
             $filter->disableIdFilter();
-
             // 在这里添加字段过滤器
-            $filter->like('name', 'name');
+            $filter->equl('supplier_id', '店铺名')->select();
 
           });
     }
