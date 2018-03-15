@@ -99,9 +99,9 @@ class SupplierGoodsController extends Controller
             $form->select('supplier_id','选择店铺')->options('/admin/api/supplier')->load('goods_id', '/admin/api/goods');
             $form->select('goods_id','选择商品')->load('goods.price','/admin/api/goodsprice');
             $form->select('goods.price','商品价格');
-            $form->text("output","出库数量");
-            $form->text('supplier_num',"商品数量");
-            $form->text('shipments',"上货数量");
+            $form->text("output","入库数量")->default(0);
+            $form->text('supplier_num',"商品数量")->default(0);
+            $form->text('shipments',"上货数量")->default(0);
             $form->text('discount','商品折扣')->default('1');
             $form->radio('is_discount','是否打折')->options(['0'=>'不打折','1'=>'打折'])->default('0');
             $form->dateRange('starttime', 'deadline', '选择打折时间');
