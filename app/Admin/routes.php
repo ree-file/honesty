@@ -25,4 +25,7 @@ Route::group([
     $router->resource('/goodssale',SaleInfoController::class);
     $router->get('supplier/{id}/goods','SupplierController@goodsmuster');
     $router->get('api/category',"CategoryController@content");
+    $router->get('api/supplier',"SupplierController@content");
+    $router->get('api/goods',"GoodsController@content");
+    $router->get('api/goodsprice','GoodsController@price');
 });
