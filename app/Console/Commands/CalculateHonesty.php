@@ -43,7 +43,9 @@ class CalculateHonesty extends Command
     {
 
         $order = Order::where('order_status',3)->get();
-
+        if ($order->isEmpty()) {
+          return 0;
+        }
         $order = $order->groupBy(function($item,$key){
           return 'supplier_'.$item['supplier_id'];
         });//将订单按店铺分组
@@ -53,7 +55,9 @@ class CalculateHonesty extends Command
         });//计算出每个店铺收益
 
         $invest = Suppliersales::with(['goods'])->get();
-
+        if ($invest->isEmpty()) {
+          return 0;
+        }
         $invest = $invest->groupBy(function($item,$key){
           return 'supplier_'.$item['supplier_id'];
         });//把投资按店铺分组
@@ -65,6 +69,10 @@ class CalculateHonesty extends Command
         $calculate = 'update supplier set honesty_rate = case ';
         $ids = '(';
         foreach ($invest as $key => $value) {
+          if (!isset($order[$key][1])) {
+              return 0;
+              break;
+          }
           $one_invest = floatval($value[1]-$value[2])*floatval($value[3]);
           $honesty_rate = floatval($order[$key][1])/floatval($one_invest);
           $calculate = $calculate." when id = ".$value[0]." then ".round($honesty_rate,2);
