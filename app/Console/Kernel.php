@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Console;
-use Illuminate\Support\Facades\DB;
+use DB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        \App\Console\Commands\CalculateHonesty::class,
     ];
 
     /**
@@ -24,9 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-      $schedule->call(function () {
-            DB::table('ceshi')->insert([['content'=>"新数据"],['content'=>"新数据1"]]);
-        })->everyMinute();
+      $schedule->command('CalculateHonesty')->dailyAt('00:00');
     }
 
     /**
