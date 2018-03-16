@@ -62,8 +62,18 @@ class CalculateHonesty extends Command
           return 'supplier_'.$item['supplier_id'];
         });//把投资按店铺分组
         $invest = $invest->map(function($item,$key){
-          return [$item[0]['supplier_id'],$item->sum('added'),$item->sum('leave'),$item[0]['goods']['price']];
+           $item = $item->groupBy(function($goods,$key){
+            return 'goods_'.$goods['goods_id'];
+          });
+          $item=$item->map(function($goods_all,$key){
+            $worth = ["num"=>($goods_all->sum('added')-$goods_all->sum('leave')),"price"=>$goods_all[0]['goods']['price']];
+            return ['worth'=>(floatval($worth['num'])*floatval($worth['price']))];
+          });
+          return $item;
         });//将每个店铺总的投资记录算出来
+        $invest = $invest->map(function($item,$key){
+          return ['worth'=>$item->sum('worth')];
+        });
         $order = $order->toArray();
         $invest = $invest->toArray();
         $calculate = 'update supplier set honesty_rate = case ';
@@ -73,10 +83,10 @@ class CalculateHonesty extends Command
               return 0;
               break;
           }
-          $one_invest = floatval($value[1]-$value[2])*floatval($value[3]);
+          $one_invest = $value['worth'];
           $honesty_rate = floatval($order[$key][1])/floatval($one_invest);
-          $calculate = $calculate." when id = ".$value[0]." then ".round($honesty_rate,2);
-          $ids = $ids.$value[0].",";
+          $calculate = $calculate." when id = ".$order[$key][0]." then ".round($honesty_rate,2);
+          $ids = $ids.$order[$key][0].",";
         }
         $calculate = $calculate." else 0 end where id in ".$ids."0)";
         $affact = DB::statement($calculate);
