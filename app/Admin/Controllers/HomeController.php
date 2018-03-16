@@ -67,22 +67,33 @@ class HomeController extends Controller
                 $today = date("Y-m-d");
                 $headers = ['排名','店铺名','销量','金额'];
                 $goods_header = ['排名','商品名','销量','金额'];
-                $data = $this->orderRank($order);
+                $honesty_header = ['排名','店铺名','诚信率'];
+                $supplier_data = Supplier::all();
+                $data = $this->orderRank($order,$supplier_data);
                 $goods_data = $this->goodsRank($order);
+                $honesty_data = $this->honestyRank($supplier_data);
                 $tab->add("今天订单排行", new Table($headers,$data['today_count']));
                 $tab->add('本周订单排行', new Table($headers,$data['week_count']));
                 $tab->add("今天收益排行", new Table($headers,$data['today_money']));
                 $tab->add("本周收益排行", new Table($headers,$data['week_money']));
                 $tab->add("本周商品销售数排行", new Table($goods_header,$goods_data['week_goods_count']));
                 $tab->add("本周商品销售额排行", new Table($goods_header,$goods_data['week_goods_money']));
+                $tab->add("小铺诚信率排行", new Table($honesty_header,$honesty_data));
                 $column->append($tab);
               });
             });
         });
     }
-    protected function orderRank($order)
+    protected function honestyRank($supplier_data)
     {
-      $data = Supplier::all();
+      $supplier_data = $supplier_data->map(function($item,$key){
+        return [$item['id'],$item['supplier_name'],round(floatval($item['honesty_rate'])*100,2)];
+      });
+      $supplier_data = $this->Bydesc($supplier_data->toArray(),2);
+      return $supplier_data;
+    }
+    protected function orderRank($order,$data)
+    {
       $week_data = $data->map(function($item,$key)use($order){
         $supplier_order = $order->where('supplier_id',$item['id']);
         return [0,$item['supplier_name'],$supplier_order->count(),$supplier_order->sum("order_pay")];
