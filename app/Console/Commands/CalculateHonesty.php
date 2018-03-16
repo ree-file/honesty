@@ -84,7 +84,7 @@ class CalculateHonesty extends Command
               break;
           }
           $one_invest = $value['worth'];
-          $honesty_rate = floatval($order[$key][1])/floatval($one_invest);
+          $honesty_rate = floatval($one_invest)==0?0:floatval($order[$key][1])/floatval($one_invest);
           $calculate = $calculate." when id = ".$order[$key][0]." then ".round($honesty_rate,2);
           $ids = $ids.$order[$key][0].",";
         }
