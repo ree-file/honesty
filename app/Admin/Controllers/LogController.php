@@ -82,14 +82,18 @@ class LogController extends Controller
               $actions->disableEdit();
             });
             $grid->disableCreateButton();
-        });
-        $grid->filter(function($filter){
-            // 去掉默认的id过滤器
-            $filter->disableIdFilter();
-            // 在这里添加字段过滤器
-            $filter->equl('supplier_id', '店铺名')->select();
+            $grid->filter(function($filter){
 
-          });
+                  // 去掉默认的id过滤器
+                  $filter->disableIdFilter();
+
+                  // 在这里添加字段过滤器
+                  $filter->date('created_at','日期');
+                  $filter->equal('supplier_id','店铺')->select('/admin/api/supplier');
+                  $filter->equal('goods_id','食品')->select('/admin/api/goods');
+                });
+        });
+
     }
 
     /**
