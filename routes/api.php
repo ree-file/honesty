@@ -26,6 +26,8 @@ Route::post('/checkuser','UserController@checkuser()');
   Route::post('/shippers','LoginController@users')->name('login');
 Route::post('/login','LoginController@index');
 Route::post('/supplier/sale/{supplier_id}','SupplierController@sale');
+//图表接口
+Route::post('chart','ChartController@index');
 //支付接口
 Route::get('/alipay/notify','AlipayController@webNotify');
 Route::get('/alipay/return','AlipayController@webReturn');

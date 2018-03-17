@@ -168,10 +168,7 @@ class SupplierController extends Controller
     }
     public function goodsmuster(Request $request)
     {
-      $supplier = Supplier::with(['goods'=>function($query){
-        $query->select("id","goods_name as text");
-      },"announcements"])->where("id",$request->supplier_id)->get();
-      $goods = $supplier->goods;
+      $goods = Goods::all();
       return $this->success($goods);
     }
     public function goodsupdate($id)

@@ -103,7 +103,7 @@ class Controller extends BaseController
     public function onsale($request)
     {
       $goods = $request->goods;
-      $update_goods = "update goods set num = num - case ";
+      $update_goods = "update supplier_goods set shipments = shipments - case ";
       $ids = "(";
       $output = [];
       for ($i=0; $i < count($goods); $i++) {
@@ -113,7 +113,7 @@ class Controller extends BaseController
         $output[$i]['goods_id'] = $goods[$i]['pivot']['goods_id'];
         $output[$i]['num'] = $goods[$i]['number'];
       }
-      $update_goods = $update_goods." else 0 end where id in ".$ids."0)";
+      $update_goods = $update_goods." else 0 end where goods_id in ".$ids."0)";
       $result_goods['update_goods'] = $update_goods;
       $result_goods['output'] = $output;
       return $result_goods;
