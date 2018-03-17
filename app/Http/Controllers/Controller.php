@@ -92,10 +92,11 @@ class Controller extends BaseController
         $goods[$i]['goods_id'] = $goods[$i]['pivot']['goods_id'];
         unset($goods[$i]['pivot']);
         unset($goods[$i]['goods_name']);
-        $update_goods = $update_goods." when id = ".$goods[$i]['goods_id']." then ".$goods[$i]['added'];
+        unset($goods[$i]['number']);
+        $update_goods = $update_goods." when goods_id = ".$goods[$i]['goods_id']." then ".$goods[$i]['added'];
         $ids = $ids.$goods[$i]['goods_id'].",";
       }
-      $update_goods = $update_goods." else 0 end where id in ".$ids."0) and supplier_id = ".$request->supplier_id;
+      $update_goods = $update_goods." else 0 end where goods_id in ".$ids."0) and supplier_id = ".$request->supplier_id;
       $request->update_goods = $update_goods;
       $request->goods = $goods;
       return $request;
@@ -103,19 +104,25 @@ class Controller extends BaseController
     public function onsale($request)
     {
       $goods = $request->goods;
-      $update_goods = "update supplier_goods set shipments = shipments - case ";
+      $update_goods = "update goods set num = num - case ";
+      $update_supplier = "update supplier_goods set supplier_num = supplier_num + case ";
       $ids = "(";
       $output = [];
       for ($i=0; $i < count($goods); $i++) {
         $update_goods = $update_goods." when id = ".$goods[$i]['pivot']['goods_id']." then ".$goods[$i]['number'];
+        $update_supplier = $update_supplier." when goods_id = ".$goods[$i]['pivot']['goods_id']." then ".$goods[$i]['number'];
         $ids = $ids.$goods[$i]['pivot']['goods_id'].",";
         $output[$i]['supplier_id'] = $request->supplier_id;
         $output[$i]['goods_id'] = $goods[$i]['pivot']['goods_id'];
         $output[$i]['num'] = $goods[$i]['number'];
+        $output[$i]['created_at']=now();
+        $output[$i]['updated_at']=now();
       }
-      $update_goods = $update_goods." else 0 end where goods_id in ".$ids."0)";
+      $update_goods = $update_goods." else 0 end where id in ".$ids."0)";
+      $update_supplier = $update_supplier." else 0 end where goods_id in ".$ids."0) and supplier_id = ".$request->supplier_id;
       $result_goods['update_goods'] = $update_goods;
       $result_goods['output'] = $output;
+      $result_goods['update_supplier'] = $update_supplier;
       return $result_goods;
     }
     public function Bydesc($data,$key)

@@ -76,6 +76,7 @@ class SupplierController extends Controller
     {
       $result = $this->onsale($request);
       $affact = DB::statement($result['update_goods']);
+      DB::statement($result['update_supplier']);
       $log = DB::table('log')->insert($result['output']);
       if ($log&&$affact) {
         return $this->success($affact);
