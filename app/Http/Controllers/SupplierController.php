@@ -12,7 +12,7 @@ use App\Suppliersales;
 use App\Supplierfavorable;
 use App\Log;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Collection;
 class SupplierController extends Controller
 {
     //
@@ -66,11 +66,36 @@ class SupplierController extends Controller
     }
     public function operate(Request $request)
     {
+      $this->CalculateHonesty($request);
       $operate_record = $this->createrecord($request);
       $Suppliersales = DB::table('suppliersale')->insert($operate_record->goods);
       // $Suppliersales = Suppliersales::create(['supplier_id'=>1,'added'=>1,'leave'=>1,'goods_id'=>1]);
       $affact = DB::statement($operate_record->update_goods);
+
       return $this->success($affact);
+    }
+    protected function CalculateHonesty($request){
+      $goods = collect($request->goods);
+      if ($goods->sum('leave')!=0) {
+        $income = Order::where('order_status',3)->where('supplier_id',$request->supplier_id)->where('created_at',"<",now())->sum('order_pay');
+        $invest = Suppliersales::with(['goods'])->where('supplier_id',$request->supplier_id)->get();
+        $invest = $invest->groupBy(function($item,$key){
+          return 'goods_'.$item['goods_id'];
+        });
+        // dd($income);
+        $invest = $invest->map(function($item,$key){
+          $worth = ["num"=>($item->sum('added')-$item->sum('leave')),"price"=>$item[0]['goods']['price']];
+          return ['worth'=>(floatval($worth['num'])*floatval($worth['price']))];
+        });
+        $invest = $invest->sum('worth');
+        // dd($invest);
+
+        $honesty = round($income/$invest,2);
+        $supplier = Supplier::find($request->supplier_id);
+        // dd($honesty);
+        $supplier->honesty_rate = $honesty;
+        $supplier->save();
+      }
     }
     public function sale(Request $request)
     {
