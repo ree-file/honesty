@@ -66,7 +66,8 @@ class CalculateHonesty extends Command
             return 'goods_'.$goods['goods_id'];
           });
           $item=$item->map(function($goods_all,$key){
-            $worth = ["num"=>($goods_all->sum('added')-$goods_all->sum('leave')),"price"=>$goods_all[0]['goods']['price']];
+            $today = intval( $goods_all[$goods_all->count()-1]['added']);
+            $worth = ["num"=>($goods_all->sum('added')-$goods_all->sum('leave')-$today),"price"=>$goods_all[0]['goods']['price']];
             return ['worth'=>(floatval($worth['num'])*floatval($worth['price']))];
           });
           return $item;
