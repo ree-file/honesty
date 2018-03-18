@@ -16,9 +16,72 @@ class ChartController extends Controller
         return $this->success($data);
       }
       else {
-
+        $data = $this->SupplierGoodsChart($request);
+        return $this->success($data);
       }
 
+    }
+    protected function SupplierGoodsChart($request)
+    {
+      if ($request->goods_id==0) {
+        $data = $this->SupplierHistory($request);
+        return $data;
+      }
+      else {
+        $data = $this->SupplierGoodsHistory($request);
+        return $data;
+      }
+    }
+    protected function SupplierGoodsHistory($request)
+    {
+      $order = $this->historyCommon($request);
+      $order = $order->map(function($item,$key)use($request){
+        $item =$item->map(function($goods,$key)use($request){
+
+            $goodscontent = (array)unserialize($goods['goods']['goods_content']);
+            $num = 0;
+            for ($i=0; $i < count($goodscontent); $i++) {
+                if ($goodscontent[$i]['goods_id']==$request->goods_id) {
+                  $num = $goodscontent[$i]['number'];
+                  break;
+                }
+            }
+            return ['time'=>$goods['time'],'num'=>$num];
+          });
+          return [date("Y-m-d",$item[0]['time']),$item->sum('num')];
+      });
+      return $order->values();
+    }
+    protected function historyCommon($request)
+    {
+      if ($request->begin==0) {
+        $order = Order::with(['ordergoods'])->where('order_status',3)->where('supplier_id',$request->supplier_id)->orderBy('created_at')->get();
+        $firstDay =strtotime($order[0]['created_at']);
+        $firstDay = date("Y-m-d",$firstDay);
+        $firstDay = strtotime($firstDay);
+      }else {
+        $begin = date("Y-m-d",$request->begin);
+        $end  = date("Y-m-d",$request->end);
+        $order = Order::where('order_status',3)->where('supplier_id',$request->supplier_id)->where('created_at','>',$begin)->where('created_at',"<",$end)->orderBy('created_at')->get();
+        $firstDay =$begin;
+      }
+      $order = $order->map(function($item,$key)use($firstDay){
+        $time = strtotime($item['created_at']);
+        $day = floor(($firstDay-$time)/86400);
+        return ['time'=>($firstDay+$day*86400),'money'=>$item['order_pay'],'goods'=>$item['ordergoods']];
+      });
+      $order = $order->groupBy(function($item,$key){
+        return 'time_'.$item['time'];
+      });
+      return $order;
+    }
+    protected function SupplierHistory($request)
+    {
+      $order = $this->historyCommon($request);
+      $order = $order->map(function($item,$key){
+        return [date('Y-m-d',$item[0]['time']),$item->count(),round($item->sum('money'),2)];
+      });
+      return $order->values();
     }
     protected function createChart($request)
     {
