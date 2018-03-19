@@ -82,17 +82,14 @@ class SupplierController extends Controller
         $invest = $invest->groupBy(function($item,$key){
           return 'goods_'.$item['goods_id'];
         });
-        // dd($income);
         $invest = $invest->map(function($item,$key){
           $worth = ["num"=>($item->sum('added')-$item->sum('leave')),"price"=>$item[0]['goods']['price']];
           return ['worth'=>(floatval($worth['num'])*floatval($worth['price']))];
         });
         $invest = $invest->sum('worth');
-        // dd($invest);
-
         $honesty = round($income/$invest,2);
         $supplier = Supplier::find($request->supplier_id);
-        // dd($honesty);
+
         $supplier->honesty_rate = $honesty;
         $supplier->save();
       }

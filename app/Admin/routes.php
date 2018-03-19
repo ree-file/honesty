@@ -11,6 +11,7 @@ Route::group([
 ], function (Router $router) {
 
     $router->get('/', 'HomeController@index');
+    $router->resource('/suppliersale',SuppliersalesController::class);
     $router->resource('goods', GoodsController::class);
     $router->resource('supplier', SupplierController::class);
     $router->resource('goodscategory', CategoryController::class);
