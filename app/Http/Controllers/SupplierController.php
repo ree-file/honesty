@@ -83,7 +83,11 @@ class SupplierController extends Controller
           return 'goods_'.$item['goods_id'];
         });
         $invest = $invest->map(function($item,$key){
-          $worth = ["num"=>($item->sum('added')-$item->sum('leave')),"price"=>$item[0]['goods']['price']];
+          $true_invest = 0;
+          for ($i=0; $i < $item->count()-1; $i++) {
+            $true_invest +=($item[$i]['added']+$item[$i]['leave']-$item[$i+1]['leave']);
+          }
+          $worth = ["num"=>$true_invest,"price"=>$item[0]['goods']['price']];
           return ['worth'=>(floatval($worth['num'])*floatval($worth['price']))];
         });
         $invest = $invest->sum('worth');
