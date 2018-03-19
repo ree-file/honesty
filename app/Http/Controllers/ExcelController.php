@@ -18,11 +18,11 @@ class ExcelController extends Controller
         // else {
         //
         // }
-        Excel::create('诚信小铺',function($excel) use ($data){
-            $excel->sheet('score', function($sheet) use ($data){
-                $sheet->rows($data);
-            });
-        })->export('xls');
+        // Excel::create('诚信小铺',function($excel) use ($data){
+        //     $excel->sheet('score', function($sheet) use ($data){
+        //         $sheet->rows($data);
+        //     });
+        // })->export('xls');
     }
     protected function honestyExcel($request)
     {
