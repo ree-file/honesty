@@ -12,12 +12,12 @@ class ExcelController extends Controller
 {
     //
     public function export(Request $request){
-        if ($request->type=="honesty") {
-        $data =   $this->honestyExcel($request);
-        }
-        else {
-          
-        }
+        // if ($request->type=="honesty") {
+        // $data =   $this->honestyExcel($request);
+        // }
+        // else {
+        //
+        // }
         Excel::create('诚信小铺',function($excel) use ($data){
             $excel->sheet('score', function($sheet) use ($data){
                 $sheet->rows($data);
