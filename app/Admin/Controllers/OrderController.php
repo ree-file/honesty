@@ -94,6 +94,15 @@ class OrderController extends Controller
 
               return join('&nbsp;', $goods);
             });
+            $grid->filter(function($filter){
+
+              // 去掉默认的id过滤器
+              $filter->disableIdFilter();
+
+              // 在这里添加字段过滤器
+              $filter->equal('supplier_id', '店铺')->select('/admin/api/goods');
+
+            });
             $grid->created_at('时间');
             $grid->order_status('支付状态');
             $grid->disableCreateButton();
