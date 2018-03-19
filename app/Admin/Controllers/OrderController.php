@@ -100,7 +100,7 @@ class OrderController extends Controller
               $filter->disableIdFilter();
 
               // 在这里添加字段过滤器
-              $filter->equal('supplier_id', '店铺')->select('/admin/api/goods');
+              $filter->equal('supplier_id', '店铺')->select('/admin/api/supplier');
 
             });
             $grid->created_at('时间');
