@@ -12,17 +12,57 @@ class ExcelController extends Controller
 {
     //
     public function export(Request $request){
-        // if ($request->type=="honesty") {
-        // $data =   $this->honestyExcel($request);
-        // }
-        // else {
-        //
-        // }
-        // Excel::create('诚信小铺',function($excel) use ($data){
-        //     $excel->sheet('score', function($sheet) use ($data){
-        //         $sheet->rows($data);
-        //     });
-        // })->export('xls');
+        if ($request->type=="honesty") {
+        $data =   $this->honestyExcel($request);
+        }
+        else {
+          $data = $this->goodsExcel($request);
+        }
+        Excel::create('诚信小铺',function($excel) use ($data){
+            $excel->sheet('score', function($sheet) use ($data){
+                $sheet->rows($data);
+            });
+        })->export('xls');
+    }
+    protected function goodsExcel($request)
+    {
+      $goods = Suppliersales::with(['goods','supplier'])->get();
+      $goods = $goods->groupBy(function($item,$key){
+        return 'goods_'.$item['goods_id'];
+      });//按商品分组
+      $goods = $goods->map(function($item,$key){
+        $item = $item->groupBy(function($item,$key){
+          return 'supplier_'.$item['supplier_id'];
+        });//按店铺分组
+        $item = $item->map(function($item,$key){
+          $num = 0;
+          for ($i=0; $i < $item->count()-1; $i++) {
+            $num += ($item[$i]['added']+$item[$i]['leave']-$item[$i+1]['leave']);
+          }
+          return [$item[0]['supplier']['supplier_name'],$item[0]['goods']['goods_name'],$num];
+        });//计算某个商品在所有店铺中销售数量
+        return $item;
+      });
+      $goods = $goods->map(function($item,$key){
+        return $item->values();
+      });
+      $goods = $goods->values()->toArray();
+
+      $goodsExcelHeader = ['店铺/食品','1栋','2栋','3栋','4栋','5栋','7栋','8栋','9栋','10栋','11栋','12栋','13栋','14栋','15栋','16栋','17栋','18栋','19栋','20栋'];
+      $goods_excel_content = [];
+      for ($i=0; $i < count($goods); $i++) {
+        $goods_excel_content[$i] = array_fill(0,20,0);
+        // dd($goods_excel_content[$i]);
+        for ($j=0; $j < count($goods[$i]); $j++) {
+          $index = intval($goods[$i][$j][0])>5?intval($goods[$i][$j][0])-1:intval($goods[$i][$j][0]);
+
+          $goods_excel_content[$i][$index] = $goods[$i][$j][2];
+
+        }
+        $goods_excel_content[$i][0] = $goods[$i][0][1];
+      }
+      array_unshift($goods_excel_content,$goodsExcelHeader);
+      return $goods_excel_content;
     }
     protected function honestyExcel($request)
     {
@@ -51,8 +91,11 @@ class ExcelController extends Controller
         });
         $item=$item->map(function($goods_all,$key){
           // $today = intval($goods_all[$goods_all->count()-1]['added']);
-          $worth = ["num"=>($goods_all->sum('added')-$goods_all->sum('leave')),"price"=>$goods_all[0]['goods']['price']];
-          return ['worth'=>(floatval($worth['num'])*floatval($worth['price']))];
+          $true_invest = 0;
+          for ($i=0; $i < $goods_all->count()-1; $i++) {
+            $true_invest +=($goods_all[$i]['added']+$goods_all[$i]['leave']-$goods_all[$i+1]['leave']);
+          }
+          $worth = ["num"=>$true_invest,"price"=>$goods_all[0]['goods']['price']];
         });
         return ['worth'=>$item->sum('worth')];
       });//将每个店铺总的投资记录算出来
