@@ -108,7 +108,7 @@ class ExcelController extends Controller
         $content[$i][0] = $order[$key][0];
         $content[$i][1] = $value['worth'];
         $content[$i][2] = $order[$key][1];
-        $content[$i][3] = round($order[$key][1]/$value['worth'],2);
+        $content[$i][3] = $value['worth']==0?0:round($order[$key][1]/$value['worth'],2);
         $i++;
       }
       array_unshift($content,$header);
