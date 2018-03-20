@@ -63,11 +63,11 @@ class ChartController extends Controller
         $begin = date("Y-m-d",$request->begin);
         $end  = date("Y-m-d",$request->end);
         $order = Order::where('order_status',3)->where('supplier_id',$request->supplier_id)->where('created_at','>',$begin)->where('created_at',"<",$end)->orderBy('created_at')->get();
-        $firstDay =$begin;
+        $firstDay =$request->begin;
       }
       $order = $order->map(function($item,$key)use($firstDay){
         $time = strtotime($item['created_at']);
-        $day = floor(($firstDay-$time)/86400);
+        $day = floor(($time-$firstDay)/86400);
         return ['time'=>($firstDay+$day*86400),'money'=>$item['order_pay'],'goods'=>$item['ordergoods']];
       });
       $order = $order->groupBy(function($item,$key){
