@@ -111,6 +111,7 @@ class ExcelController extends Controller
             $true_invest +=($goods_all[$i]['added']+$goods_all[$i]['leave']-$goods_all[$i+1]['leave']);
           }
           $worth = ["num"=>$true_invest,"price"=>$goods_all[0]['goods']['price']];
+          return ['worth'=>($worth['num']*$worth['price'])];
         });
         return ['worth'=>$item->sum('worth')];
       });//将每个店铺总的投资记录算出来
