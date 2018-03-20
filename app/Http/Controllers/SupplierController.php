@@ -66,12 +66,14 @@ class SupplierController extends Controller
     }
     public function operate(Request $request)
     {
-      $this->CalculateHonesty($request);
+
       $operate_record = $this->createrecord($request);
       $Suppliersales = DB::table('suppliersale')->insert($operate_record->goods);
       // $Suppliersales = Suppliersales::create(['supplier_id'=>1,'added'=>1,'leave'=>1,'goods_id'=>1]);
       $affact = DB::statement($operate_record->update_goods);
-
+      if ($affact) {
+        $this->CalculateHonesty($request);
+      }
       return $this->success($affact);
     }
     protected function CalculateHonesty($request){
