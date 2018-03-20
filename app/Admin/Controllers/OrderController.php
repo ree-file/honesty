@@ -103,7 +103,7 @@ class OrderController extends Controller
               $filter->equal('supplier_id', '店铺')->select('/admin/api/supplier');
 
             });
-            $grid->created_at('时间');
+            $grid->created_at('时间')->sortable();
             $grid->order_status('支付状态');
             $grid->disableCreateButton();
             $grid->actions(function ($actions) {

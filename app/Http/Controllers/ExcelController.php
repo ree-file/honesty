@@ -16,6 +16,7 @@ class ExcelController extends Controller
         $data =   $this->honestyExcel($request);
         }
         else {
+
           $data = $this->goodsExcel($request);
         }
         Excel::create('诚信小铺',function($excel) use ($data){
@@ -26,7 +27,14 @@ class ExcelController extends Controller
     }
     protected function goodsExcel($request)
     {
-      $goods = Suppliersales::with(['goods','supplier'])->get();
+      if ($request->begin ==0) {
+        $goods = Suppliersales::with(['goods','supplier'])->get();
+      }
+      else {
+        $begin = date("Y-m-d",$request->begin);
+        $end  = date("Y-m-d",$request->end);
+        $goods = Suppliersales::with(['goods','supplier'])->where('created_at',">",$begin)->where('created_at',"<",$end)->get();
+      }
       $goods = $goods->groupBy(function($item,$key){
         return 'goods_'.$item['goods_id'];
       });//按商品分组
@@ -66,7 +74,14 @@ class ExcelController extends Controller
     }
     protected function honestyExcel($request)
     {
-      $order = Order::with(['supplier'])->where('order_status',3)->get();
+      if ($request->begin==0) {
+        $order = Order::with(['supplier'])->where('order_status',3)->get();
+      }
+      else {
+        $begin = date("Y-m-d",$request->begin);
+        $end  = date("Y-m-d",$request->end);
+        $order = Order::with(['supplier'])->where('order_status',3)->where('created_at','>',$begin)->where('created_at','<',$end)->get();
+      }
       if ($order->isEmpty()) {
         return 0;
       }
