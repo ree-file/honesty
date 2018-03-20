@@ -103,8 +103,9 @@ class ExcelController extends Controller
       $order = $order->toArray();
       $header = ['店铺','应收款','实收款','诚信率'];
       $content = [];
-      foreach ($invest as $key => $value) {
         $i = 0;
+      foreach ($invest as $key => $value) {
+
         $content[$i][0] = $order[$key][0];
         $content[$i][1] = $value['worth'];
         $content[$i][2] = $order[$key][1];

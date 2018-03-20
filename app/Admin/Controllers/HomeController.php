@@ -26,7 +26,7 @@ class HomeController extends Controller
             $content->header('诚信小铺后台');
             $content->description('网站概要信息');
 
-            $lastSunday = date('Y-m-d', strtotime(' monday', time()));
+            $lastSunday = date('Y-m-d', strtotime('-1 monday', time()));
 
             $order = Order::with(["supplier"=>function($query){
               $query->select("supplier_name");
