@@ -32,9 +32,19 @@ class SupplierController extends Controller
         $query->select("goods_name");
       }])->where("id",$request->supplier_id)->get();
       $supplier_goods = $this->reconstruction($supplier_goods);
+      $operate_num = $this->checkNum($request);
       return $this->success($supplier_goods);
     }
-
+    protected function checkNum($request)
+    {
+      $today = date("Y-m-d",strtotime(now()));
+      $num = SuppliersalesController::where('created_at',">",$today)->where('supplier_id',$request->supplier_id)->get();
+      $num = $num->groupBy(function($item,$key){
+        return "goods_".$item['goods_id'];
+      });
+      $num =  $num->count()==0?0:$num[0]->count();
+      return $num;
+    }
     public function buy(Request $request)
     {
 

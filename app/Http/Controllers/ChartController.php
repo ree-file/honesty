@@ -151,7 +151,7 @@ class ChartController extends Controller
         $begin = date("Y-m-d",$request->begin);
         $end  = date("Y-m-d",$request->end);
         $data = Order::with(['supplier'])->where('order_status',3)->where('created_at',">",$begin)->where('created_at',"<",$end)->get();
-        $data_order = $this->supplierOrder($order);
+        $data_order = $this->supplierOrder($data);
         $data_honesty = $this->supplierHonesty();
         return ['orderRank'=>$data_order,'honestyRank'=>$data_honesty];
       }
