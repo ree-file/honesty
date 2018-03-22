@@ -76,14 +76,14 @@ class HomeController extends Controller
                 $supplier_data = Supplier::all();
                 $data = $this->orderRank($order,$supplier_data);
                 $goods_data = $this->goodsRank($order);
-                $honesty_data = $this->honestyRank($supplier_data);
+                // $honesty_data = $this->honestyRank($supplier_data);
                 $tab->add("今天订单排行", new Table($headers,$data['today_count']));
                 $tab->add('本周订单排行', new Table($headers,$data['week_count']));
                 $tab->add("今天收益排行", new Table($headers,$data['today_money']));
                 $tab->add("本周收益排行", new Table($headers,$data['week_money']));
                 $tab->add("本周商品销售数排行", new Table($goods_header,$goods_data['week_goods_count']));
                 $tab->add("本周商品销售额排行", new Table($goods_header,$goods_data['week_goods_money']));
-                $tab->add("小铺诚信率排行", new Table($honesty_header,$honesty_data));
+                // $tab->add("小铺诚信率排行", new Table($honesty_header,$honesty_data));
                 $column->append($tab);
               });
             });
