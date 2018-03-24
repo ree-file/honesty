@@ -154,7 +154,7 @@ class ExcelController extends Controller
         $header = $order[$i][0]['supplier_name'];
         for ($j=0; $j < count($order[$i]); $j++) {
           $data = $order[$i][$j];
-          $content[$data['goods_id']] = [$data['goods_name'],$data]
+          $content[$data['goods_id']] = [$data['goods_name'],$data];
         }
       }
     }
