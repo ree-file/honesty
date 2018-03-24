@@ -29,7 +29,7 @@ Route::post('/supplier/sale/{supplier_id}','SupplierController@sale');
 //图表接口
 Route::post('chart','ChartController@index');
 //导出excel接口
-Route::get('excel/index','ExcelController@export');
+Route::get('excel/export','ExcelController@export');
 //支付接口
 Route::get('/alipay/notify','AlipayController@webNotify');
 Route::get('/alipay/return','AlipayController@webReturn');
