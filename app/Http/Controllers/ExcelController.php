@@ -15,9 +15,12 @@ class ExcelController extends Controller
         if ($request->type=="honesty") {
         $data =   $this->honestyExcel($request);
         }
-        else {
+        elseif($request->type=='goods'){
 
           $data = $this->goodsExcel($request);
+        }
+        elseif ($request->type=='sale') {
+          $data = $this->saleExcel($request);
         }
         Excel::create('诚信小铺',function($excel) use ($data){
             $excel->sheet('score', function($sheet) use ($data){
@@ -130,5 +133,29 @@ class ExcelController extends Controller
       }
       array_unshift($content,$header);
       return $content;
+    }
+    protected function saleExcel($request)
+    {
+      $order = Order::with(['supplier','ordergoods'])->where('status',3)->get();
+      $order = $order->groupBy(function($item,$key){
+        return 'supplier_'.$item['supplier_id'];
+      });
+      $order = $order->map(function($item,$key){
+        $item = $item->map(function($item,$key){
+                $goods = (array)unserialize($item['goods']['goods_content']);
+                return ['supplier_name'=>$item['supplier']['supplier_name'],'goods'=>$goods];
+        });
+        return $item;
+      });
+      $order = $order->values()->toArray();
+      $header = [];
+      $content =[];
+      for ($i=0; $i < count($order); $i++) {
+        $header = $order[$i][0]['supplier_name'];
+        for ($j=0; $j < count($order[$i]); $j++) {
+          $data = $order[$i][$j];
+          $content[$data['goods_id']] = [$data['goods_name'],$data]
+        }
+      }
     }
 }
