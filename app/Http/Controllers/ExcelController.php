@@ -79,11 +79,13 @@ class ExcelController extends Controller
     {
       if ($request->begin==0) {
         $order = Order::with(['supplier'])->where('order_status',3)->get();
+        $invest = Suppliersales::with(['goods'])->get();
       }
       else {
         $begin = date("Y-m-d",$request->begin);
         $end  = date("Y-m-d",$request->end);
         $order = Order::with(['supplier'])->where('order_status',3)->where('created_at','>',$begin)->where('created_at','<',$end)->get();
+        $invest = Suppliersales::with(['goods'])->where('created_at','>',$begin)->where('created_at','<',$end)->get();
       }
       if ($order->isEmpty()) {
         return 0;
@@ -96,7 +98,7 @@ class ExcelController extends Controller
         return [$item[0]['supplier']['supplier_name'],$item->sum('order_pay')];
       });//计算出每个店铺收益
 
-      $invest = Suppliersales::with(['goods'])->get();
+
       if ($invest->isEmpty()) {
         return 0;
       }
@@ -136,13 +138,14 @@ class ExcelController extends Controller
     }
     protected function saleExcel($request)
     {
-      $order = Order::with(['supplier','ordergoods'])->where('status',3)->get();
+      $order = Order::with(['supplier','ordergoods'])->where('order_status',3)->get();
       $order = $order->groupBy(function($item,$key){
         return 'supplier_'.$item['supplier_id'];
       });
       $order = $order->map(function($item,$key){
         $item = $item->map(function($item,$key){
-                $goods = (array)unserialize($item['goods']['goods_content']);
+
+                $goods = (array)unserialize($item['ordergoods']['goods_content']);
                 return ['supplier_name'=>$item['supplier']['supplier_name'],'goods'=>$goods];
         });
         return $item;
@@ -150,12 +153,26 @@ class ExcelController extends Controller
       $order = $order->values()->toArray();
       $header = [];
       $content =[];
+      // dd($order);
       for ($i=0; $i < count($order); $i++) {
-        $header = $order[$i][0]['supplier_name'];
+        $header[$i] = $order[$i][0]['supplier_name'];
         for ($j=0; $j < count($order[$i]); $j++) {
           $data = $order[$i][$j];
-          $content[$data['goods_id']] = [$data['goods_name'],$data];
+          // dd($data);
+          if (!$data['goods']) {
+            continue;
+          }
+          for ($k=0; $k < count($data['goods']); $k++) {
+            $goods_data = $data['goods'][$k];
+            if (isset($content[$goods_data['goods_id']])) {
+              $content[$goods_data['goods_id']][1] +=intval($goods_data['number']);
+            }
+            else {
+              $content[$goods_data['goods_id']] = [$goods_data['goods_name'],intval($goods_data['number'])];
+            }
+          }
         }
       }
+      dd($content);
     }
 }
