@@ -13,7 +13,7 @@ class ExcelController extends Controller
     //
     public function export(Request $request){
         if ($request->type=="honesty") {
-        $data =   $this->honestyExcel($request);
+        $data = $this->honestyExcel($request);
         }
         elseif($request->type=='goods'){
 
@@ -48,7 +48,7 @@ class ExcelController extends Controller
         $item = $item->map(function($item,$key){
           $num = 0;
           for ($i=0; $i < $item->count()-1; $i++) {
-            $num += ($item[$i]['added']+$item[$i]['leave']-$item[$i+1]['leave']);
+            $num += (intval($item[$i]['added'])+intval($item[$i]['leave'])-intval($item[$i+1]['leave']));
           }
           return [$item[0]['supplier']['supplier_name'],$item[0]['goods']['goods_name'],$num];
         });//计算某个商品在所有店铺中销售数量
@@ -111,7 +111,7 @@ class ExcelController extends Controller
           // $today = intval($goods_all[$goods_all->count()-1]['added']);
           $true_invest = 0;
           for ($i=0; $i < $goods_all->count()-1; $i++) {
-            $true_invest +=($goods_all[$i]['added']+$goods_all[$i]['leave']-$goods_all[$i+1]['leave']);
+            $true_invest +=(intval($goods_all[$i]['added'])+intval($goods_all[$i]['leave'])-intval($goods_all[$i+1]['leave']));
           }
           $worth = ["num"=>$true_invest,"price"=>$goods_all[0]['goods']['price']];
           return ['worth'=>($worth['num']*$worth['price'])];
