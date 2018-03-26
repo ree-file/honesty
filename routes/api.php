@@ -21,11 +21,13 @@ Route::get('/supplier/goods/{supplier_id}','SupplierController@goods');
 Route::post('/supplier/{supplier_id}/buy','SupplierController@buy');
 Route::post('/checkuser','UserController@checkuser()');
 //上货端
-  Route::post('/supplier/operate/{supplier_id}','SupplierController@operate');
-  Route::post('/notify','NotifyController@store');
-  Route::post('/shippers','LoginController@users')->name('login');
+Route::post('/supplier/operate/{supplier_id}','SupplierController@operate');
+Route::post('/notify','NotifyController@store');
+Route::post('/shippers','LoginController@users')->name('login');
 Route::post('/login','LoginController@index');
 Route::post('/supplier/sale/{supplier_id}','SupplierController@sale');
+Route::get('/supplier/{supplier_id}/history','SupplierController@history');
+Route::post('/supplier/{supplier_id}/deletehistory','SupplierController@deletehistory');
 //图表接口
 Route::post('chart','ChartController@index');
 //导出excel接口

@@ -32,18 +32,7 @@ class SupplierController extends Controller
         $query->select("goods_name");
       }])->where("id",$request->supplier_id)->get();
       $supplier_goods = $this->reconstruction($supplier_goods);
-      $operate_num = $this->checkNum($request);
       return $this->success($supplier_goods);
-    }
-    protected function checkNum($request)
-    {
-      $today = date("Y-m-d",strtotime(now()));
-      $num = SuppliersalesController::where('created_at',">",$today)->where('supplier_id',$request->supplier_id)->get();
-      $num = $num->groupBy(function($item,$key){
-        return "goods_".$item['goods_id'];
-      });
-      $num =  $num->count()==0?0:$num[0]->count();
-      return $num;
     }
     public function buy(Request $request)
     {
@@ -85,6 +74,31 @@ class SupplierController extends Controller
         $this->CalculateHonesty($request);
       }
       return $this->success($affact);
+    }
+    public function history(Request $request)
+    {
+      $date = date("Y-m-d",time());
+      $history = Suppliersales::with(['goods'])->where('supplier_id',$request->supplier_id)->where('created_at',">",$date)->orderBy('created_at','desc')->get();
+      $history = $history->map(function($item,$key){
+        return [
+          'id'=>$item['id'],
+          'added'=>intval($item['added']),
+          'leave'=>intval($item['leave']),
+          'goods_name'=>$item['goods']['goods_name'],
+          'date'=>date('H:i:s',strtotime($item['created_at'])),
+          'delete'=>date('Y-m-d H:i',strtotime($item['created_at']))];
+      });
+      return $this->success($history);
+    }
+    public function deletehistory(Request $request)
+    {
+      $result = DB::table('suppliersale')->where('created_at', '>', $request->date)->where('supplier_id',$request->supplier_id)->delete();
+      if ($result) {
+        return $this->success($result);
+      }
+      else {
+        return $this->failed($result);
+      }
     }
     protected function CalculateHonesty($request){
       $goods = collect($request->goods);

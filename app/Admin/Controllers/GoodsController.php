@@ -79,6 +79,7 @@ class GoodsController extends Controller
             $grid->goods_name('商品名称');
             $grid->img('商品图片')->image();
             $grid->price('商品价格')->sortable();
+            $grid->num('库存');
             $grid->goodscategory()->cate_name('分类名称');
         });
     }
