@@ -118,7 +118,7 @@ class ExcelController extends Controller
       });//将订单按店铺分组
 
       $order = $order->map(function($item,$key)use($invest){
-        if ($invest[$key]->is_Empty()) {
+        if (!isset($invest[$key])) {
           return [];
         }
         $item = $item->where('created_at','<',$invest[$key]['time']);
