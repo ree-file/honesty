@@ -110,7 +110,7 @@ class ExcelController extends Controller
           return ['worth'=>($worth['num']*$worth['price']),
           'time'=>$goods_all[$goods_all->count()-1]['created_at']];
         });
-        return ['worth'=>$item->sum('worth'),'time'=>$item[0]['time']];
+        return ['worth'=>$item->sum('worth'),'time'=>$item[$key][0]['time']];
       });//将每个店铺总的投资记录算出来
       $order = $order->groupBy(function($item,$key){
         return 'supplier_'.$item['supplier_id'];
