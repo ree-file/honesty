@@ -118,6 +118,9 @@ class ExcelController extends Controller
       });//将订单按店铺分组
 
       $order = $order->map(function($item,$key)use($invest){
+        if ($invest[$key]->is_Empty()) {
+          return [];
+        }
         $item = $item->where('created_at','<',$invest[$key]['time']);
         return [$item[0]['supplier']['supplier_name'],$item->sum('order_pay')];
       });//计算出每个店铺收益
