@@ -90,15 +90,6 @@ class ExcelController extends Controller
       if ($order->isEmpty()) {
         return 0;
       }
-      $order = $order->groupBy(function($item,$key){
-        return 'supplier_'.$item['supplier_id'];
-      });//将订单按店铺分组
-
-      $order = $order->map(function($item,$key){
-        return [$item[0]['supplier']['supplier_name'],$item->sum('order_pay')];
-      });//计算出每个店铺收益
-
-
       if ($invest->isEmpty()) {
         return 0;
       }
@@ -116,10 +107,20 @@ class ExcelController extends Controller
             $true_invest +=(intval($goods_all[$i]['added'])+intval($goods_all[$i]['leave'])-intval($goods_all[$i+1]['leave']));
           }
           $worth = ["num"=>$true_invest,"price"=>$goods_all[0]['goods']['price']];
-          return ['worth'=>($worth['num']*$worth['price'])];
+          return ['worth'=>($worth['num']*$worth['price']),
+          'time'=>$goods_all[$goods_all->count()-1]['created_at']];
         });
-        return ['worth'=>$item->sum('worth')];
+        return ['worth'=>$item->sum('worth'),'time'=>$item[0]['time']];
       });//将每个店铺总的投资记录算出来
+      $order = $order->groupBy(function($item,$key){
+        return 'supplier_'.$item['supplier_id'];
+      });//将订单按店铺分组
+
+      $order = $order->map(function($item,$key)use($invest){
+        $item = $item->where('created_at','<',$invest[$key]['time']);
+        return [$item[0]['supplier']['supplier_name'],$item->sum('order_pay')];
+      });//计算出每个店铺收益
+
       $invest = $invest->toArray();
       $order = $order->toArray();
       $header = ['店铺','应收款','实收款','诚信率'];
