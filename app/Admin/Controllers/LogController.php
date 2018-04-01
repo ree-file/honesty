@@ -10,6 +10,9 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
+use App\Admin\Controllers\Extensions\ExcelExpoter;
+
+
 
 class LogController extends Controller
 {
@@ -78,6 +81,7 @@ class LogController extends Controller
             $grid->goods()->goods_name("商品名");
             $grid->num("数量");
             $grid->created_at("添加时间")->sortable();
+            $grid->exporter(new ExcelExpoter());
             $grid->actions(function ($actions) {
               $actions->disableDelete();
               $actions->disableEdit();
@@ -92,6 +96,7 @@ class LogController extends Controller
                   $filter->date('created_at','日期');
                   $filter->equal('supplier_id','店铺')->select('/admin/api/supplier');
                   $filter->equal('goods_id','食品')->select('/admin/api/goods');
+                  $filter->between('created_at', '时间段')->datetime();
                 });
         });
 
