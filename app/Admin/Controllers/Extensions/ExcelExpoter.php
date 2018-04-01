@@ -22,7 +22,7 @@ class ExcelExpoter extends AbstractExporter
                       $item['created_at']==null?'第一次':$item['created_at']
                     ];
                 });
-                $rows-prepend(['店铺','食品','数量','日期']);
+                $rows = $rows->prepend(['店铺','食品','数量','日期']);
                 $sheet->rows($rows);
 
             });
