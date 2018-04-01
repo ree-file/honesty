@@ -22,7 +22,7 @@ class ExcelExpoter extends AbstractExporter
                       $item['created_at']==null?'第一次':$item['created_at']
                     ];
                 });
-                array_unshift($rows,['店铺','商品','数量','时间']);
+                //array_unshift($rows,['店铺','商品','数量','时间']);
                 $sheet->rows($rows);
 
             });
