@@ -76,6 +76,7 @@ class LogController extends Controller
             $grid->id('ID')->sortable();
             $grid->supplier()->supplier_name("店铺名");
             $grid->goods()->goods_name("商品名");
+            $grid->num("数量");
             $grid->created_at("添加时间")->sortable();
             $grid->actions(function ($actions) {
               $actions->disableDelete();
