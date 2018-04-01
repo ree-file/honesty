@@ -9,9 +9,9 @@ class ExcelExpoter extends AbstractExporter
 {
     public function export()
     {
-        Excel::create('Filename', function($excel) {
+        Excel::create('店铺入库记录', function($excel) {
 
-            $excel->sheet('Sheetname', function($sheet) {
+            $excel->sheet('first', function($sheet) {
                 // 这段逻辑是从表格数据中取出需要导出的字段
                 $rows = collect($this->getData())->map(function ($item) {
                     return
@@ -22,7 +22,7 @@ class ExcelExpoter extends AbstractExporter
                       $item['created_at']==null?'第一次':$item['created_at']
                     ];
                 });
-                //array_unshift($rows,['店铺','商品','数量','时间']);
+                $rows-prepend(['店铺','食品','数量','日期']);
                 $sheet->rows($rows);
 
             });

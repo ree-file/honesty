@@ -93,10 +93,10 @@ class LogController extends Controller
                   $filter->disableIdFilter();
 
                   // 在这里添加字段过滤器
-                  $filter->date('created_at','日期');
+                  // $filter->date('created_at','日期');
                   $filter->equal('supplier_id','店铺')->select('/admin/api/supplier');
                   $filter->equal('goods_id','食品')->select('/admin/api/goods');
-                  //$filter->between('created_at', '时间段')->datetime();
+                  $filter->between('created_at', '时间段')->datetime();
                 });
         });
 
